@@ -12,7 +12,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>OPGEA Systems</title>
         <link rel="stylesheet" type="text/css" href="<spring:url value="/resources/ext-4.0/resources/css/ext-all.css" />" type="text/css" media="all"/>
         <script type="text/javascript" src="<spring:url value="/resources/ext-4.0/ext-all-debug.js"/>" ></script>
         <script type="text/javascript" src="<spring:url value="/resources/visitors/view/company/CompanyBasicInfo.js"/>"></script>
@@ -62,19 +62,18 @@
                 margin-top: 20px;
                 margin-right: 20px;
                 margin-bottom: 20px;
-                padding-right: 10%;
+                padding-right: 5%;
                 width: 40%;
             }
         </style>        
     </head>
     <body>
-        <div id="clock" class="clock" style="text-align: right;">
-            Attendance Management System
-        </div>
         <table width="100%">
             <tr>
                 <td align="left" colspan="2">
-                    <img src="<spring:url value="/images/opgea.jpg"/>"  height="120" width="250" alt="opgea"/>
+                    <!--
+                    <img src="<spring:url value="/images/opgea_logo.jpg"/>"  height="120" width="200" alt="opgea"/>
+                    -->
                 </td>
             </tr>
         </table>
@@ -83,13 +82,36 @@
         </div>        
         </br>
         </br>
-        
-        <table width="40%" align="right">
+        </br>
+        </br>
+        <table width="100%">
             <tr>
-                <td id="companyBasicInfo" class="companyInfo"></td>
+                <td align="center">
+                    <img src="<spring:url value="/images/opgea_logo.jpg"/>"  alt="opgea"/>
+                </td>
+                <td id="companyBasicInfo" class="companyInfo" align="left"></td>
             </tr>
         </table>
-        
+        </br>       
+        </br>
+        </br>
+        </br>
+        </br>
+        <hr>
+        <table width="100%">
+            <tr>
+                <td>
+                    </br>
+                </td>
+                <td align="center">
+                    <font face="calibri" size="3">
+                    Powered By: OPGEA Systems
+                    </br>
+                    Contact: 0120-44137653, 9868351070
+                    </font>
+                </td>
+            </tr>
+        </table>
             
             
     </body>
