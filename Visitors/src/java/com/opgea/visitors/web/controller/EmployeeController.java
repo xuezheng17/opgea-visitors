@@ -25,6 +25,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -68,6 +69,14 @@ public class EmployeeController {
         List<EmployeeDTO> empDTOList = employeeService.findAllByCompanyId(sessionData.getCompanyId());
 
         return JsonModelMap.success().data(empDTOList);
+    }
+    
+    @RequestMapping(value="employee", method= RequestMethod.GET)
+    public @ResponseBody
+            Map<String, Object> getEmployee(@RequestParam(required=false, 
+                    value="employeeId")Long employeeId,  HttpServletRequest request){
+        EmployeeDTO empDTO = employeeService.find(employeeId);
+        return JsonModelMap.success().data(empDTO);
     }
     
     @RequestMapping(method = RequestMethod.POST, value = "uploadImage")

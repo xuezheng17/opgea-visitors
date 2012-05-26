@@ -19,6 +19,7 @@ public interface VisitorDAO {
     public Visitor remove(Long id);
     public Visitor find(Long id);
     public List<Visitor> findAll();
+    public List<Visitor> searchVisitors(Long companyId, Long employeeId, String visitingDate, String searchKey) ;
     public List<Visitor> findAllByEmployeeId(Long employeeId);
     public List<Visitor> findAllByCompanyId(Long companyId);
     

@@ -5,15 +5,24 @@
 package com.opgea.visitors.web.controller;
 
 import com.opgea.constraints.SessionConstraints;
-import com.opgea.util.DateUtil;
+import com.opgea.util.ImageUtil;
 import com.opgea.visitors.domain.modal.JsonModelMap;
 import com.opgea.visitors.domain.modal.SessionData;
+import com.opgea.visitors.domain.modal.VisitorStatus;
+import com.opgea.visitors.domain.modal.VisitorStatus;
+import com.opgea.visitors.domain.qualifier.EmployeeType;
 import com.opgea.visitors.domain.qualifier.RequestStatusQualifier;
+import com.opgea.visitors.service.ApplicationService;
 import com.opgea.visitors.service.VisitorService;
 import com.opgea.visitors.web.dto.VisitorDTO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,36 +43,49 @@ public class VisitorController {
     @Autowired
     private VisitorService visitorService;
     
-    @RequestMapping(method= RequestMethod.POST, value="create")
-    public @ResponseBody Map<String, Object> create(VisitorDTO visitorDTO, HttpServletRequest request) throws IOException{
-        System.out.println("VisitorController >> Create");
-        
+    @Autowired
+    private ApplicationService applicationService;
+    
+    
+    @RequestMapping(method= RequestMethod.POST, value="createImage")
+    public @ResponseBody Map<String, Object> createImage(VisitorDTO visitorDTO, HttpServletRequest request) throws IOException{
         HttpSession session = request.getSession();
         SessionData sessionData = (SessionData) session.getAttribute(SessionConstraints.SESSION_DATA.name());
+        System.out.println("Create Image");
+
+        ImageUtil imageUtil = new ImageUtil();
+        imageUtil.createImage(request.getInputStream(), "c:/visitor_images/"+sessionData.getEmpId()+".jpeg");
+        System.out.println("Done");
+        return JsonModelMap.success();
+    }
+    
+    
+    @RequestMapping(method= RequestMethod.POST, value="create")
+    public @ResponseBody Map<String, Object> create(VisitorDTO visitorDTO, HttpServletRequest request) throws IOException{
+        HttpSession session = request.getSession();
+        SessionData sessionData = (SessionData) session.getAttribute(SessionConstraints.SESSION_DATA.name());
+
+
+        
+        
+        BufferedImage originalImage = null;
+        if(sessionData.getEmployeeType() == EmployeeType.RECEPTION.ordinal() || sessionData.getEmployeeType() == EmployeeType.ADMIN.ordinal()) {
+            visitorDTO.setCreatedBy(sessionData.getEmpId());
+            originalImage = ImageIO.read(new File("c:/visitor_images/"+sessionData.getEmpId()+".jpeg"));
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(originalImage, "jpg", baos );
+            baos.flush();
+            byte[] imageInByte = baos.toByteArray();
+            visitorDTO.setPicture(imageInByte);
+            baos.close();
+        }
+
         visitorDTO.setCompanyId(sessionData.getCompanyId());
+        
+        System.out.println("VisitorController >> "+visitorDTO);
         visitorService.create(visitorDTO);
         
-        /*
-         * Do not delete.
-         * Image processing code;
-        BufferedInputStream bis = new BufferedInputStream(request.getInputStream());
-        FileOutputStream fos;
-
-        try{
-            fos = new FileOutputStream(new File("c:/image.jpeg"));
-            byte[] bs = new byte[1024];
-            int len;
-
-            while ((len = bis.read(bs, 0, bs.length)) != -1) {
-                fos.write(bs, 0, len);
-            }
-            fos.close();
-        }
-        catch (Exception ex)
-        {}
-        bis.close();
-        */
-        return JsonModelMap.success().data(visitorDTO.getName()+" --> "+visitorDTO.getEmployeeId());
+        return JsonModelMap.success().data(visitorDTO.getName()+" --> "+visitorDTO.getId());
     }
     
     @RequestMapping(method=RequestMethod.GET, value="visitorList", params={}  )
@@ -71,34 +93,82 @@ public class VisitorController {
         HttpSession session = request.getSession();
         SessionData sessionData = (SessionData) session.getAttribute(SessionConstraints.SESSION_DATA.name());
         //Long employeeId = Long.parseLong(request.getParameter("employeeId").toString());
-        System.out.println("VisitorController >> Employee Id: "+employeeId);
         List<VisitorDTO> visitors = null;
         if(employeeId > 0){
-            System.out.append("VisitorList: 1");
-            visitors = visitorService.findAllByEmployeeId(employeeId);
-            
+            visitors = visitorService.findAllByEmployeeId(employeeId, sessionData.getEmpId());
         }else{
-            System.out.append("VisitorList: 2");
-            visitors = visitorService.findAllByCompanyId(sessionData.getCompanyId());
+            visitors = visitorService.findAllByCompanyId(sessionData.getCompanyId(), sessionData.getEmpId());
+        }
+        return JsonModelMap.success().data(visitors);
+    }
+    
+    @RequestMapping(method=RequestMethod.GET, value="searchVisitors", params={}  )
+    public @ResponseBody Map<String, Object> searchVisitors(
+                    @RequestParam(value="visitingDate", required=false) String visitingDate,
+                    @RequestParam(value="searchKey", required=false) String searchKey, 
+                    HttpServletRequest request){
+        HttpSession session = request.getSession();
+        SessionData sessionData = (SessionData) session.getAttribute(SessionConstraints.SESSION_DATA.name());
+        //Long employeeId = Long.parseLong(request.getParameter("employeeId").toString());
+        System.out.println("Search Visitors Controller: "+searchKey);
+        List<VisitorDTO> visitors = null;
+        if(sessionData.getEmployeeType() == EmployeeType.ADMIN.ordinal()){
+            visitors = visitorService.searchVisitors(sessionData.getCompanyId(), 0L, visitingDate, searchKey);
+        }
+        if(sessionData.getEmployeeType() == EmployeeType.RECEPTION.ordinal()){
+            visitors = visitorService.searchVisitors(sessionData.getCompanyId(), 0L, visitingDate, searchKey);
+        }
+        if(sessionData.getEmployeeType() == EmployeeType.EMPLOYEE.ordinal()){
+            visitors = visitorService.searchVisitors(sessionData.getCompanyId(), sessionData.getEmpId(), visitingDate, searchKey);
         }
         return JsonModelMap.success().data(visitors);
     }
     
     @RequestMapping(method= RequestMethod.POST, value="updateStatus")
     public @ResponseBody Map<String, Object> updateStatus(VisitorDTO visitorDTO, HttpServletRequest request){
-        System.out.println("VisitorController >> updateStatus");
         
         HttpSession session = request.getSession();
         SessionData sessionData = (SessionData) session.getAttribute(SessionConstraints.SESSION_DATA.name());
         visitorDTO.setCompanyId(sessionData.getCompanyId());
         if(visitorDTO.getStatusString().equalsIgnoreCase(RequestStatusQualifier.CHECK_IN.toString())){
-            visitorService.checkInVisitor(visitorDTO);
+            //visitorService.checkInVisitor(visitorDTO);
         }
         if(visitorDTO.getStatusString().equalsIgnoreCase(RequestStatusQualifier.CHECK_OUT.toString())){
-            visitorService.checkOutVisitor(visitorDTO);
+            //visitorService.checkOutVisitor(visitorDTO);
         }else{
-            visitorService.updateVisitorStatus(visitorDTO);
+            //visitorService.updateVisitorStatus(visitorDTO);
         }
         return JsonModelMap.success().data(visitorDTO.getName());
+    }
+    
+    @RequestMapping(method= RequestMethod.GET, value="notification")
+    public @ResponseBody Map<String, Object> getNotification(HttpServletRequest request){
+        HttpSession session = request.getSession();
+        SessionData sessionData = (SessionData) session.getAttribute(SessionConstraints.SESSION_DATA.name());
+        List<VisitorStatus> visitors = 
+                applicationService.findAllVisitorStatusByEmployeeId(sessionData.getCompanyId(), sessionData.getEmpId());
+        Map<String, Object> responseMap = new HashMap<String, Object>();
+        VisitorStatus visitorStatus = 
+                applicationService.findRespondedVisitorStatusByEmployeeId(sessionData.getCompanyId(), sessionData.getEmpId());
+        
+        /*
+        for(VisitorStatus visitorState : visitors){
+            if(visitorState.getForwardedTo().equals(sessionData.getEmpId())){
+                visitorStatus = visitorState;
+            }
+        }*/
+        
+        int count = 0;
+        if(visitors != null){
+            count = visitors.size();
+        }
+        
+        responseMap.put("success", "success");
+        responseMap.put("data", visitorStatus);
+        responseMap.put("count", count);
+
+        return responseMap;
+        
+        //return JsonModelMap.success().data(visitors);
     }
 }

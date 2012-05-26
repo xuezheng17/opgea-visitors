@@ -88,5 +88,38 @@ public class VisitorDAOImpl implements VisitorDAO{
         List<Visitor> visitors =  query.list();
         return visitors;
     }
+
+    public List<Visitor> searchVisitors(Long companyId, Long employeeId, String visitingDate, String searchKey){
+        Session session = sessionFactory.openSession();
+        StringBuilder query = new StringBuilder();
+        query.append(" SELECT v FROM Visitor v WHERE v.company.id = ");
+        query.append(companyId);
+        if(employeeId > 0){
+            query.append(" AND v.employee.id = ");
+            query.append(employeeId);
+        }
+        if(!visitingDate.equalsIgnoreCase("")){
+            query.append(" AND v.visitingDate = ");
+            query.append("'");
+            query.append(visitingDate);
+            query.append("'");
+        }
+        if(!searchKey.equalsIgnoreCase("")){
+            query.append(" AND v.metaData like ");
+            query.append("'%");
+            query.append(searchKey);
+            query.append("%'");
+        }
+        
+        /*
+        Query query = session.getNamedQuery("Visitor.findAllByNameLike");
+        query.setParameter("name", "%"+searchKey+"%");
+         * 
+         */
+        System.out.println("Search Query:"+query.toString());
+        Query queryObject = session.createQuery(query.toString());
+        List<Visitor> visitors =  queryObject.list();
+        return visitors;
+    }
     
 }

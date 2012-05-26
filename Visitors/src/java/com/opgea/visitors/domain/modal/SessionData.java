@@ -4,6 +4,8 @@ public class SessionData {
 
 	private String loginId;
 	private Long empId;
+        private Integer employeeType;
+        private String employeeTypeName;
         private String empName;
 	private Long companyId;
 	private String companyName;
@@ -73,6 +75,22 @@ public class SessionData {
 
     public void setDepartmentName(String departmentName) {
         this.departmentName = departmentName;
+    }
+
+    public Integer getEmployeeType() {
+        return employeeType;
+    }
+
+    public void setEmployeeType(Integer employeeType) {
+        this.employeeType = employeeType;
+    }
+
+    public String getEmployeeTypeName() {
+        return employeeTypeName;
+    }
+
+    public void setEmployeeTypeName(String employeeTypeName) {
+        this.employeeTypeName = employeeTypeName;
     }
 
 	

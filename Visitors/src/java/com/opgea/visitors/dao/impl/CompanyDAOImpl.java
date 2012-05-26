@@ -63,9 +63,13 @@ public class CompanyDAOImpl implements CompanyDAO{
 
     @Override
     public List<Company> findAll() {
+        System.out.println("Company DOA findall : 1");
         Session session = sessionFactory.openSession();
-        Query query = session.getNamedQuery("Company.findAll");
+        System.out.println("Company DOA findall : 2");
+        //Query query = session.getNamedQuery("Company.findAll");
+        Query query = session.createQuery("SELECT c FROM Company c");
         List<Company> companies = query.list();
+        System.out.println("Company Size: "+companies.size());
         return companies;
     }
 }

@@ -10,5 +10,5 @@ package com.opgea.visitors.domain.qualifier;
  */
 public enum EmployeeType {
     
-    MASTER, EMPLOYEE
+    ADMIN, EMPLOYEE, RECEPTION
 }

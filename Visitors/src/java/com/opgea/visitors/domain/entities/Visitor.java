@@ -6,11 +6,12 @@ package com.opgea.visitors.domain.entities;
 
 import com.opgea.visitors.domain.qualifier.RequestStatusQualifier;
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -27,10 +28,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "visitor")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Visitor.findById", query = "SELECT v FROM Visitor v WHERE v.id = :id"),
     @NamedQuery(name = "Visitor.findAll", query = "SELECT v FROM Visitor v"),
-    @NamedQuery(name = "Visitor.findAllByEmployeeId", query = "SELECT v FROM Visitor v WHERE v.employee.id = :employeeId"),
-    @NamedQuery(name = "Visitor.findAllByCompanyId", query = "SELECT v FROM Visitor v WHERE v.company.id = :companyId")
+    @NamedQuery(name = "Visitor.findById", query = "SELECT v FROM Visitor v WHERE v.id = :id"),
+    @NamedQuery(name = "Visitor.findAllByNameLike", query = "SELECT v FROM Visitor v WHERE v.name like :name"),
+    @NamedQuery(name = "Visitor.findAllByEmployeeId", query = "SELECT v FROM Visitor v WHERE v.outTime is null AND v.employee.id = :employeeId"),
+    @NamedQuery(name = "Visitor.findAllByCompanyId", query = "SELECT v FROM Visitor v WHERE v.outTime is null AND v.company.id = :companyId")
     }
 )
 public class Visitor implements Serializable{
@@ -50,10 +52,17 @@ public class Visitor implements Serializable{
     private Long inTime;
     //@Temporal(TemporalType.DATE)
     private Long outTime;
+    private String metaData;
+    @Lob
+    @Column(nullable = true, length = 2097152)
+    private byte[] picture;
     @ManyToOne
     private Employee employee;
     @ManyToOne
     private Company company;
+    
+    private Long createdBy;
+    
 
     public Visitor() {
     }
@@ -152,6 +161,30 @@ public class Visitor implements Serializable{
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    public Long getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(Long createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getMetaData() {
+        return metaData;
+    }
+
+    public void setMetaData(String metaData) {
+        this.metaData = metaData;
+    }
+
+    public byte[] getPicture() {
+        return picture;
+    }
+
+    public void setPicture(byte[] picture) {
+        this.picture = picture;
     }
 
     @Override

@@ -65,6 +65,8 @@ public class DesignationServiceImpl implements DesignationService{
         DesignationDTO designationDTO = new DesignationDTO();
         designationDTO.setId(designation.getId());
         designationDTO.setName(designation.getName());
+        designationDTO.setDepartmentId(designation.getDepartment().getId());
+        designationDTO.setDepartmentName(designation.getDepartment().getName());
         //designationDTO.setCompanyId(designation.getCompany().getId());
         return designationDTO;
     }
@@ -77,6 +79,8 @@ public class DesignationServiceImpl implements DesignationService{
             DesignationDTO designationDTO = new DesignationDTO();
             designationDTO.setId(designation.getId());
             designationDTO.setName(designation.getName());
+            designationDTO.setDepartmentId(designation.getDepartment().getId());
+            designationDTO.setDepartmentName(designation.getDepartment().getName());
             //designationDTO.setCompanyId(designation.getCompany().getId());
             designationList.add(designationDTO);
         }
@@ -91,6 +95,8 @@ public class DesignationServiceImpl implements DesignationService{
             DesignationDTO designationDTO = new DesignationDTO();
             designationDTO.setId(designation.getId());
             designationDTO.setName(designation.getName());
+            designationDTO.setDepartmentId(designation.getDepartment().getId());
+            designationDTO.setDepartmentName(designation.getDepartment().getName());
             //designationDTO.setCompanyId(designation.getCompany().getId());
             designationList.add(designationDTO);
         }

@@ -14,6 +14,7 @@ import com.opgea.visitors.domain.qualifier.EmployeeType;
 import com.opgea.visitors.service.UtilService;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,6 @@ public class UtilServiceImpl implements UtilService{
     private CountryDAO countryDAO;
     @Autowired
     private CityDAO cityDAO;
-
     
     
     @Override
@@ -86,37 +86,56 @@ public class UtilServiceImpl implements UtilService{
     }
 
     @Override
-    public ExtJSTreeModel getMenuTree() {
-        ExtJSTreeModel daddy = new ExtJSTreeModel();
-        daddy.setId(1L);
-        daddy.setText("Daddy");
-        daddy.setDescription("Father");
-        daddy.setLeaf(false);
-        daddy.setExpanded("false");
-        daddy.setIconCls("");
+    public ExtJSTreeModel getMenuTree(EmployeeType employeeType) {
+        ExtJSTreeModel rootMenu = new ExtJSTreeModel();
+        rootMenu.setId(0L);
+        rootMenu.setText(employeeType.name().toUpperCase(Locale.US));
+        rootMenu.setDescription("Setting Basics of Application");
+        rootMenu.setLeaf(false);
+        rootMenu.setExpanded("false");
+        rootMenu.setIconCls("settingIcon");
+
+        /*
+         * For ADMIN and RECEPTION
+         */
+        ExtJSTreeModel searchVisitor = new ExtJSTreeModel(1L, "Search Visitors", "userIcon", "Search Visitors", Boolean.TRUE, "FALSE", null);
         
-        ExtJSTreeModel child1 = new ExtJSTreeModel();
-        child1.setId(2L);
-        child1.setText("Bobby");
-        child1.setDescription("First Child");
-        child1.setLeaf(false);
-        child1.setExpanded("false");
-        child1.setIconCls("");
+        /*
+         * Items Authorized to ADMIN
+         */
+        ExtJSTreeModel department = new ExtJSTreeModel(2L, "Department", "monitorIcon", "Create Department", Boolean.TRUE, "FALSE", null);
+        ExtJSTreeModel designation = new ExtJSTreeModel(3L, "Designation", "bookIcon", "Create Designation", Boolean.TRUE, "FALSE", null);
+        ExtJSTreeModel employee = new ExtJSTreeModel(4L, "Employee", "userIcon", "Create Employee", Boolean.TRUE, "FALSE", null);
         
-        ExtJSTreeModel child2 = new ExtJSTreeModel();
-        child2.setId(3L);
-        child2.setText("Rinku");
-        child2.setDescription("Second Child");
-        child2.setLeaf(false);
-        child2.setExpanded("false");
-        child2.setIconCls("");
+        /*
+         * Items Authorized to RECEPTION
+         */
+        ExtJSTreeModel entry = new ExtJSTreeModel(5L, "Entry", "timeInIcon", "Entry Point", Boolean.TRUE, "FALSE", null);
         
-        List<ExtJSTreeModel> childrenList1 = new ArrayList<ExtJSTreeModel>();
-        childrenList1.add(child1);
-        childrenList1.add(child2);
         
-        daddy.setChildren(childrenList1);
-        return daddy;
+        /*
+         * Items Authorized to EMPLOYEE
+         */
+        ExtJSTreeModel requestList = new ExtJSTreeModel(9L, "Request List", "userIcon", "Request List", Boolean.TRUE, "FALSE", null);
+        
+
+        
+        List<ExtJSTreeModel> menuList = new ArrayList<ExtJSTreeModel>();
+        if(employeeType == EmployeeType.ADMIN){
+            menuList.add(department);
+            menuList.add(designation);
+            menuList.add(employee);
+        }
+        if(employeeType == EmployeeType.RECEPTION){
+            menuList.add(entry);
+        }
+        if(employeeType == EmployeeType.EMPLOYEE){
+            menuList.add(requestList);
+        }
+        menuList.add(searchVisitor);
+        
+        rootMenu.setChildren(menuList);
+        return rootMenu;
     }
 
         

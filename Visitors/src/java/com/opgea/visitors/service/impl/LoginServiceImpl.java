@@ -8,6 +8,9 @@ import com.opgea.visitors.dao.EmployeeDAO;
 import com.opgea.visitors.dao.LoginDAO;
 import com.opgea.visitors.domain.entities.Employee;
 import com.opgea.visitors.domain.entities.Login;
+import com.opgea.visitors.domain.modal.EmployeeStatus;
+import com.opgea.visitors.domain.qualifier.OnlineQualifier;
+import com.opgea.visitors.service.ApplicationService;
 import com.opgea.visitors.service.LoginService;
 import com.opgea.visitors.web.dto.LoginDTO;
 import java.util.List;
@@ -26,6 +29,9 @@ public class LoginServiceImpl implements LoginService{
     
     @Autowired
     private EmployeeDAO employeeDAO;
+    
+    @Autowired
+    private ApplicationService applicationService;
 
     @Override
     public LoginDTO create(LoginDTO loginDTO) {
@@ -71,6 +77,11 @@ public class LoginServiceImpl implements LoginService{
         if(login != null){
             if(login.getPassword().equals(password) && login.getIsActive() == true){
                 authentic = true;
+                EmployeeStatus employeeStatus = new EmployeeStatus();
+                employeeStatus.setCompanyId(login.getEmployee().getCompany().getId());
+                employeeStatus.setEmployeeId(login.getEmployee().getId());
+                employeeStatus.setOnlineStatus(OnlineQualifier.ONLINE);
+                applicationService.addEmployeeStatus(employeeStatus);
             }
         }
         return authentic;

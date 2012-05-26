@@ -15,6 +15,8 @@ public class EmployeeDTO {
     
     private Long id;
     private Long companyId;
+    private Integer employeeType;
+    private String employeeTypeName;
     private String firstName;
     private String middleInitial;
     private String lastName;
@@ -31,14 +33,16 @@ public class EmployeeDTO {
     private String designationName;
     private Long departmentId;
     private String departmentName;
+    private Integer onlineStatusId = 0;
     
 
     public EmployeeDTO() {
     }
 
-    public EmployeeDTO(Long id, Long companyId, String firstName, String middleInitial, String lastName, Date dateOfBirth, Long branchId, String email, String phone1, String phone2, String empCode, Long designationId, String designationName) {
+    public EmployeeDTO(Long id, Long companyId, Integer employeeType, String firstName, String middleInitial, String lastName, Date dateOfBirth, Long branchId, String email, String phone1, String phone2, byte[] picture, String empCode, Long designationId, String designationName, Long departmentId, String departmentName, Integer onlineStatusId) {
         this.id = id;
         this.companyId = companyId;
+        this.employeeType = employeeType;
         this.firstName = firstName;
         this.middleInitial = middleInitial;
         this.lastName = lastName;
@@ -47,12 +51,24 @@ public class EmployeeDTO {
         this.email = email;
         this.phone1 = phone1;
         this.phone2 = phone2;
+        this.picture = picture;
         this.empCode = empCode;
         this.designationId = designationId;
         this.designationName = designationName;
+        this.departmentId = departmentId;
+        this.departmentName = departmentName;
+        this.onlineStatusId = onlineStatusId;
     }
 
-   
+    
+    public Integer getEmployeeType() {
+        return employeeType;
+    }
+
+    public void setEmployeeType(Integer employeeType) {
+        this.employeeType = employeeType;
+    }
+
 
     public Long getCompanyId() {
         return companyId;
@@ -184,12 +200,28 @@ public class EmployeeDTO {
         this.departmentName = departmentName;
     }
 
+    public String getEmployeeTypeName() {
+        return employeeTypeName;
+    }
 
+    public void setEmployeeTypeName(String employeeTypeName) {
+        this.employeeTypeName = employeeTypeName;
+    }
+
+    public Integer getOnlineStatusId() {
+        return onlineStatusId;
+    }
+
+    public void setOnlineStatusId(Integer onlineStatusId) {
+        this.onlineStatusId = onlineStatusId;
+    }
 
     @Override
     public String toString() {
-        return "EmployeeDTO{" + "id=" + id + ", companyId=" + companyId + ", firstName=" + firstName + ", middleInitial=" + middleInitial + ", lastName=" + lastName + ", emailId=" + email + ", phone1=" + phone1 + ", phone2=" + phone2 + ", empCode=" + empCode + ", designationId=" + designationId + ", designationName=" + designationName + '}';
+        return "EmployeeDTO{" + "id=" + id + ", companyId=" + companyId + ", employeeType=" + employeeType + ", employeeTypeName=" + employeeTypeName + ", firstName=" + firstName + ", middleInitial=" + middleInitial + ", lastName=" + lastName + ", dateOfBirth=" + dateOfBirth + ", branchId=" + branchId + ", email=" + email + ", phone1=" + phone1 + ", phone2=" + phone2 + ", picture=" + picture + ", empCode=" + empCode + ", designationId=" + designationId + ", designationName=" + designationName + ", departmentId=" + departmentId + ", departmentName=" + departmentName + ", onlineStatusId=" + onlineStatusId + '}';
     }
+
+
 
     
     

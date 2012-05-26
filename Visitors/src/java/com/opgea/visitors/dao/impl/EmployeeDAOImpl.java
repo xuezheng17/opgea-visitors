@@ -55,7 +55,8 @@ public class EmployeeDAOImpl implements EmployeeDAO{
     @Override
     public Employee find(Long id) {
         Session session = sessionFactory.openSession();
-        Query query = session.createQuery("from Employee e WHERE e.id="+id);
+        Query query = session.getNamedQuery("Employee.findAllById");
+        query.setParameter("id", id);
         Employee employee = (Employee)query.uniqueResult();
         session.close();
         return employee;

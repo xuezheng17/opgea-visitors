@@ -18,10 +18,11 @@ public interface VisitorService {
     public VisitorDTO remove(Long id);
     public VisitorDTO find(Long id);
     public List<VisitorDTO> findAll();
-    public List<VisitorDTO> findAllByEmployeeId(Long employeeId);
-    public List<VisitorDTO> findAllByCompanyId(Long companyId);
+    public List<VisitorDTO> searchVisitors(Long companyId, Long employeeId, String visitingDate, String searchKey);
+    public List<VisitorDTO> findAllByEmployeeId(Long employeeId, Long loggedUser);
+    public List<VisitorDTO> findAllByCompanyId(Long companyId, Long loggedUser);
     
-    public VisitorDTO checkInVisitor(VisitorDTO visitorDTO);
-    public VisitorDTO checkOutVisitor(VisitorDTO visitorDTO);
-    public VisitorDTO updateVisitorStatus(VisitorDTO visitorDTO);
+    //public VisitorDTO checkInVisitor(VisitorDTO visitorDTO);
+    //public VisitorDTO checkOutVisitor(VisitorDTO visitorDTO);
+    //public VisitorDTO updateVisitorStatus(VisitorDTO visitorDTO);
 }
