@@ -110,7 +110,8 @@ Ext.define('Visitors.view.login.LoginForm', {
                         id: 'resetButton',
                         text: 'Reset',
                         handler: function(){
-                            Ext.up('form').getForm().reset();
+                            var form = this.up('form').getForm();
+                            form.reset();
                         }
                     }
                 ]

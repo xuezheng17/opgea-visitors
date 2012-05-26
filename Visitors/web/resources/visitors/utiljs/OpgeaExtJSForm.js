@@ -6,7 +6,7 @@ function submitVisitorForm(form, url, isSuccessMessage, object){
            //enctype: 'multipart/form-data',
            url: url,
            mevthod:'POST',
-           waitMsg: 'Processing...',
+           //waitMsg: 'Processing...',
            success: function(form, action){
                if(isSuccessMessage === true){
                     Ext.Msg.alert('Success',action.result.data);

@@ -7,13 +7,18 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
     },
     title: 'Visitors Entry',
     
-    setRequesteeInfo: function(employeeId, name, designation, department, contactNo){
+    setRequesteeInfoHidden: function(hideValue){
+        Ext.getCmp('requesteeFieldSet').hidden = hideValue;
+    },
+    
+    setRequesteeInfo: function(employeeId, name, designation, department, contactNo, onlineStatusId){
         var data = {
             employeeId: employeeId,
             name: name,
             designation: designation,
             department: department,
-            contactNo: contactNo
+            contactNo: contactNo,
+            onlineStatusId: onlineStatusId
         };
         var employeeIdTF = Ext.getCmp('employeeId');
         employeeIdTF.setValue(employeeId);
@@ -27,7 +32,7 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
             '</td>',
             '<td>&nbsp</td>',
             '<td valign="top">',
-            '<b>{name}</b><br>',
+            '<b>{name}</b><img src="../images/{onlineStatusId}.jpg" /><br>',
             '{designation}<br>',
             '({department})<br>',
             '{contactNo}',
@@ -40,6 +45,12 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
         panel.doComponentLayout();
     },
     
+    decreaseNotificationCount: function(){
+        var currentNotification = Ext.getCmp('currentNotificationButton').getText();
+        //Ext.Msg.alert('Count', currentNotification);
+        Ext.getCmp('currentNotificationButton').setText(currentNotification-1);
+    },
+    
     showVisitorList: function(employeeId){
        //Ext.Msg.alert('employeeId', employeeId);
        var visitorStore = Ext.getStore('visitorStore');
@@ -49,6 +60,37 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
             }
         });
     },
+    
+    setUiByLogin: function(){
+      Ext.Ajax.request({
+        url: 'login/loginInfo',
+        method: 'GET',
+        success: function(result, request){
+            var responseData = result.responseText;
+            var jsonData = Ext.JSON.decode(responseData); 
+
+            var employeeType = jsonData.data.employeeTypeName;
+            //Ext.Msg.alert('EmployeeType', employeeType);
+            if(employeeType == 'EMPLOYEE'){
+                Ext.getCmp('receptionActionButtonGroup').setDisabled(true);
+                Ext.getCmp('receptionActionToolBar').setDisabled(true);
+                if(document.getElementById('camera') != null){
+                    document.getElementById('camera').hidden = true;
+                }
+            }
+            if(employeeType == 'RECEPTION'){
+                Ext.getCmp('requesteeActionButtonGroup').setDisabled(true);
+            }
+            if(employeeType == 'ADMIN'){
+            }
+        }
+      })
+    },
+    
+    setEmployeeId: function(employeeId){
+        var employeeIdTF = Ext.getCmp('employeeId');
+        employeeIdTF.setValue(employeeId);
+    },
 
     initComponent: function() {
         
@@ -57,6 +99,15 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
         var me = this;
 
         Ext.applyIf(me, {
+            listeners: {
+                afterrender: function(){
+                    //Ext.Msg.alert('Message','afterrenderer')
+                    me.setUiByLogin();
+                    if(document.getElementById('camera') != null){
+                        document.getElementById('camera').hidden = false;
+                    }
+                }
+            },
             items: [
                 {
                     xtype: 'form',
@@ -77,9 +128,9 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                             xtype: 'panel',
                             id: 'cameraPanel',
                             padding: 5,
-                            //height: 150,
+                            height: 160,
                             border: false,
-                            el: 'mainWrapper',
+                            el: 'camera',
                             items:[]
                         },
                         {
@@ -89,6 +140,7 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                             items: [
                                 {
                                     xtype: 'hidden',
+                                    fieldLabel: 'Id',
                                     name: 'id',
                                     value: '0'
                                 },
@@ -101,6 +153,13 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                                 },
                                 {
                                     xtype: 'hidden',
+                                    fieldLabel: 'Created By',
+                                    name: 'createdBy',
+                                    value: '0'
+                                },
+                                {
+                                    xtype: 'hidden',
+                                    fieldLabel: 'Visitor Status',
                                     id: 'visitorStatus',
                                     name: 'statusString',
                                     value: '0'
@@ -152,6 +211,7 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                                 },
                                 {
                                     xtype: 'toolbar',
+                                    id: 'receptionActionToolBar',
                                     docked: 'bottom',
                                     layout: {
                                         pack: 'end',
@@ -160,29 +220,38 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                                     items: [
                                         {
                                             xtype: 'button',
-                                            text: 'Snap',
+                                            id: 'takePictureButton',
+                                            text: 'Take Picture',
+                                            disabled: true,
                                             handler: function(){
                                                 webcam.snap();
-                                                Ext.Msg.alert('Message',document.getElementById('camera').innerHTML);
-                                                me.down('htmleditor').html = document.getElementById('camera').innerHTML;
                                             }
                                         },
                                         '-',
-                                        /*
                                         {
                                             xtype: 'button',
-                                            text: 'Configure',
-                                            handler: function(){
-                                                webcam.configure('camera');
-                                            }
-                                        },
-                                        */
-                                        {
-                                            xtype: 'button',
+                                            id: 'requestButton',
                                             text: 'Request',
+                                            disabled: true,
                                             handler: function(){
                                                     var form = this.up('form').getForm();
                                                     submitVisitorForm(form, 'visitors/create', false, me);
+                                                    Ext.getCmp('requestButton').setDisabled(true);
+                                                    
+                                            }
+                                        },
+                                        '-',
+                                        {
+                                            xtype: 'button',
+                                            text: 'New Entry',
+                                            handler: function(){
+                                                var employeeIdTF = Ext.getCmp('employeeId');
+                                                var employeeId = employeeIdTF.getValue();
+                                                var form = this.up('form').getForm();
+                                                form.reset();
+                                                employeeIdTF.setValue(employeeId);
+                                                Ext.getCmp('requestButton').setDisabled(true);
+                                                Ext.getCmp('takePictureButton').setDisabled(false);
                                             }
                                         }
                                     ]
@@ -199,7 +268,7 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                         {
                             xtype: 'fieldset',
                             id: 'requesteeFieldSet',
-                            title: 'Requesting To',
+                            //title: 'Requesting To',
                             flex: 1,
                             layout: 'hbox',
                             padding: 5,
@@ -209,13 +278,14 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                                         id: 'requesteePanel',
                                         padding: 5,
                                         border: false
-                                    }
+                                    },
                             ]
                         },
                         {
                             xtype: 'gridpanel',
+                            id: 'visitorGridPanel',
                             collapsible: true,
-                            height: 400,
+                            height: 450,
                             width: '100%',
                             title: 'Request List',
                             titleCollapse: true,
@@ -224,12 +294,31 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                             store: visitorStore,
                             viewConfig:{
                                     stripeRows: false,
-                                    forceFit: true,
+                                    forceFit: true
+                                    /*
+                                    ,
                                     getRowClass: function(record, rowIndex, rowParams, store){
                                             return record.get('statusString');
-                                    }        
+                                    }
+                                    */
                             },
                             columns: [
+                                {
+                                    text: '',
+                                    xtype: 'actioncolumn',
+                                    width: 30,
+                                    items:[{
+                                        //id     : 'detailContactPerson',
+                                        icon   : '../images/add.gif',
+                                        tooltip: 'Zoom',
+                                        handler: function(grid, rowIndex, colIndex){
+                                            var record = grid.getStore().getAt(rowIndex);
+                                            var visitorImageId = record.get('id');
+                                            var visitorName = record.get('name');
+                                            Ext.Msg.alert(visitorName, '<img src="util/visitorImage/'+visitorImageId +'" height="250" width="250" />');
+                                        }
+                                    }]
+                                },
                                 {
                                     xtype: 'gridcolumn',
                                     dataIndex: 'id',
@@ -239,10 +328,10 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                                 
                                 {
                                     xtype: 'templatecolumn',
-                                    dataIndex: 'name',
+                                    dataIndex: 'forwardedToMe',
                                     text: '',
-                                    width: 45,
-                                    tpl: '<img src="util/employeeImage/1" height="40" width="30" />'
+                                    width: 65,
+                                    tpl: '<img src="util/visitorImage/{id}" height="70" width="55" />'
                                 }
                                 ,
                                 {
@@ -250,9 +339,11 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                                     dataIndex: 'name',
                                     text: 'Name',
                                     width:150,
-                                    tpl: '<b>{name}</b><br>'+
+                                    tpl: '<img src="../images/{forwardedToMe}.jpg" height="10" width="10"/>&nbsp'+
+                                         '<b>{name}</b><br>'+
                                          '{fromCompany}<br>'+
-                                         '{contactNo}'
+                                         '{contactNo}<br>'
+                                         
                                 },
                                 {
                                     xtype: 'gridcolumn',
@@ -270,12 +361,26 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                                 {
                                     xtype: 'gridcolumn',
                                     dataIndex: 'inTime',
-                                    text: 'In Time'
+                                    text: 'In Time',
+                                    width: 70,
                                 },
                                 {
                                     xtype: 'gridcolumn',
                                     dataIndex: 'outTime',
-                                    text: 'Out Time'
+                                    text: 'Out Time',
+                                    width: 70
+                                },
+                                {
+                                    xtype: 'gridcolumn',
+                                    dataIndex: 'createdBy',
+                                    text: 'Created By',
+                                    hidden: true
+                                },
+                                {
+                                    xtype: 'gridcolumn',
+                                    dataIndex: 'forwardedToMe',
+                                    text: 'Visitor In Queue',
+                                    hidden: true
                                 }
                                 /*
                                 {
@@ -291,8 +396,39 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                             listeners: {
                                 selectionchange: function(model, records){
                                     if(records[0]){
+                                        Ext.getCmp('requestButton').setDisabled(false);
                                         Ext.getCmp('visitorsEntryForm').getForm().loadRecord(records[0]);
                                         //this.up('form').getForm().loadRecord(records[0]);
+                                        var record = records[0];
+                                        var employeeId = record.get('employeeId');
+                                                Ext.Ajax.request({
+                                                url: 'user/employee?employeeId='+employeeId,
+                                                method: 'GET',
+                                                success: function(result, request){
+                                                    var responseData = result.responseText;
+                                                    var jsonData = Ext.JSON.decode(responseData); 
+                                                    //Ext.Msg.alert('Message', jsonData.data.id);
+                                                    var employeeId = jsonData.data.id;
+                                                    var name = jsonData.data.firstName+" "+jsonData.data.middleInitial+" "+jsonData.data.lastName;
+                                                    var designation = jsonData.data.designationName;
+                                                    var department = jsonData.data.departmentName;
+                                                    var contactNo = jsonData.data.phone1;
+                                                    var onlineStatusId = jsonData.data.onlineStatusId;
+                                                    me.setRequesteeInfo(employeeId, name, designation, department, contactNo, onlineStatusId);
+                                                },
+                                                failure: function(form, action){
+                                                       if(action.failureType == Ext.form.Action.CLIENT_INVALID){
+                                                           Ext.Msg.alert("Cannot Submit", "Some fields are still invalid! ");
+                                                       }
+                                                       if(action.failureType == Ext.form.Action.CONNECT_FAILURE){
+                                                           Ext.Msg.alert("Failure","Server communication failure: "+
+                                                           action.response.status+' '+action.response.statusText);
+                                                       }
+                                                       if(action.failuretype == Ext.form.Action.SERVER_INVALID){
+                                                           Ext.Mst.alert("Warning", "action.result.errormsg");
+                                                       }
+                                                 }
+                                              }); 
                                     }
                                 },
                                 afterrender: function(){
@@ -318,7 +454,7 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                                                    iconCls : 'userIcon',
                                                    iconAlign: 'top',
                                                    handler: function(){
-                                                       Ext.getCmp('requesteeFieldSet').setVisible(true);
+                                                       //Ext.getCmp('requesteeFieldSet').setVisible(true);
                                                        var employeeId = Ext.getCmp('employeeId').getValue();
                                                        me.showVisitorList(employeeId);
                                                    }
@@ -329,9 +465,9 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                                                 iconCls: 'tableRefreshIcon',
                                                 iconAlign: 'top',
                                                 handler: function(){
-                                                        Ext.getCmp('requesteeFieldSet').setVisible(false);
-                                                        me.showVisitorList('0');
-                                                }
+                                                            //Ext.getCmp('requesteeFieldSet').setVisible(false);
+                                                            me.showVisitorList('0');
+                                                         }
                                                }
                                             ]
                                         },
@@ -340,8 +476,9 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                                         },
                                         {
                                             xtype: 'buttongroup',
+                                            id: 'receptionActionButtonGroup',
                                             title: '<b>Entrypoint Action</b>',
-                                            columns: 2,
+                                            columns: 3,
                                             defaults: {
                                                     scale: 'small'
                                                 },
@@ -353,27 +490,50 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                                                        iconCls : 'CHECK_IN_ICON',
                                                        iconAlign: 'top',
                                                        handler: function(){
-                                                            Ext.getCmp('visitorStatus').setValue(this.id);
-                                                            var form = me.down('form').getForm();
-                                                            submitVisitorForm(form, 'visitors/updateStatus', false, me);
+                                                            if(isValidAction(this.id) == true){
+                                                                Ext.getCmp('visitorStatus').setValue(this.id);
+                                                                var form = me.down('form').getForm();
+                                                                submitVisitorForm(form, 'visitors/create', false, me);
+                                                                me.decreaseNotificationCount();
+                                                            }
                                                        }
                                                     },
                                                     {   
                                                        xtype: 'button' ,
                                                        id: 'CHECK_OUT',
-                                                       text: 'Check out',
+                                                       text: 'Check Out',
                                                        iconCls : 'CHECK_OUT_ICON',
                                                        iconAlign: 'top',
                                                        handler: function(){
-                                                            Ext.getCmp('visitorStatus').setValue(this.id);
-                                                            var form = me.down('form').getForm();
-                                                            submitVisitorForm(form, 'visitors/updateStatus', false, me);
+                                                            if(isValidAction(this.id) == true){
+                                                                Ext.getCmp('visitorStatus').setValue(this.id);
+                                                                var form = me.down('form').getForm();
+                                                                submitVisitorForm(form, 'visitors/create', false, me);
+                                                                me.decreaseNotificationCount();
+                                                            }
+                                                       }
+                                                    },
+                                                    {   
+                                                       xtype: 'button' ,
+                                                       id: 'CAN_NOT_MEET',
+                                                       text: 'Can\'t Meet',
+                                                       iconCls : 'NOT_INTERESTED_ICON',
+                                                       iconAlign: 'top',
+                                                       handler: function(){
+                                                            if(isValidAction(this.id) == true){
+                                                                Ext.getCmp('visitorStatus').setValue(this.id);
+                                                                var form = me.down('form').getForm();
+                                                                submitVisitorForm(form, 'visitors/create', false, me);
+                                                                me.decreaseNotificationCount();
+                                                            }
                                                        }
                                                     }
                                                ]
                                         },
+                                        '-',
                                         {
                                             xtype: 'buttongroup',
+                                            id: 'requesteeActionButtonGroup',
                                             title: '<b>Requestee Action</b>',
                                             columns: 4,
                                             defaults: {
@@ -386,10 +546,15 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                                                        text: 'Wait',
                                                        iconCls : 'WAIT_ICON',
                                                        iconAlign: 'top',
+                                                       hidden: true,
                                                        handler: function(){
-                                                            Ext.getCmp('visitorStatus').setValue(this.id);
-                                                            var form = me.down('form').getForm();
-                                                            submitVisitorForm(form, 'visitors/updateStatus', false, me);
+                                                            if(isValidAction(this.id) == true){
+                                                                Ext.getCmp('visitorStatus').setValue(this.id);
+                                                                var form = me.down('form').getForm();
+                                                                submitVisitorForm(form, 'visitors/create', false, me);
+                                                                me.decreaseNotificationCount();
+                                                            }
+                                                            
                                                        }
                                                     },
                                                     {   
@@ -399,9 +564,12 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                                                        iconCls : 'CALL_ICON',
                                                        iconAlign: 'top',
                                                        handler: function(){
-                                                            Ext.getCmp('visitorStatus').setValue(this.id);
-                                                            var form = me.down('form').getForm();
-                                                            submitVisitorForm(form, 'visitors/updateStatus', false, me);
+                                                            if(isValidAction(this.id) == true){
+                                                                Ext.getCmp('visitorStatus').setValue(this.id);
+                                                                var form = me.down('form').getForm();
+                                                                submitVisitorForm(form, 'visitors/create', false, me);
+                                                                me.decreaseNotificationCount();
+                                                            }
                                                        }
                                                     },
                                                     {   
@@ -411,9 +579,12 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                                                        iconCls : 'MEETING_DONE_ICON',
                                                        iconAlign: 'top',
                                                        handler: function(){
-                                                            Ext.getCmp('visitorStatus').setValue(this.id);
-                                                            var form = me.down('form').getForm();
-                                                            submitVisitorForm(form, 'visitors/updateStatus', false, me);
+                                                            if(isValidAction(this.id) == true){
+                                                                Ext.getCmp('visitorStatus').setValue(this.id);
+                                                                var form = me.down('form').getForm();
+                                                                submitVisitorForm(form, 'visitors/create', false, me);
+                                                                me.decreaseNotificationCount();
+                                                            }
                                                        }
                                                     },
                                                     {   
@@ -423,9 +594,12 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                                                        iconCls : 'NOT_INTERESTED_ICON',
                                                        iconAlign: 'top',
                                                        handler: function(){
-                                                            Ext.getCmp('visitorStatus').setValue(this.id);
-                                                            var form = me.down('form').getForm();
-                                                            submitVisitorForm(form, 'visitors/updateStatus', false, me);
+                                                            if(isValidAction(this.id) == true){
+                                                                Ext.getCmp('visitorStatus').setValue(this.id);
+                                                                var form = me.down('form').getForm();
+                                                                submitVisitorForm(form, 'visitors/create', false, me);
+                                                                me.decreaseNotificationCount();
+                                                            }
                                                        }
                                                     }
                                                ]

@@ -18,12 +18,7 @@ Ext.define('Visitors.view.viewport.UserMainViewport', {
                 autoHeight: true,
                 width: width,
                 modal: true,
-                //minimizable: true,
-                //maximizable: true,
                 closable:true,
-                //collapsible:true,
-                //animCollapse: true,
-                //maximized: true,
                 listeners: {
                     maximize: function(){
                         var viewportHeight = Ext.getCmp('userMainViewport').height;
@@ -47,6 +42,115 @@ Ext.define('Visitors.view.viewport.UserMainViewport', {
         tabContainer.setActiveTab(component);
     },
     
+    getViewportHeight: function(){
+        var viewportHeight = Ext.getCmp('userMainViewport').getHeight();
+        return viewportHeight;
+    },
+    
+    getViewportWidth: function(){
+        var viewportWidth = Ext.getCmp('userMainViewport').getWidth();
+        return viewportWidth;
+    },
+
+    getNotifications: function(){
+        var currentNotification = Ext.getCmp('currentNotificationButton').getText();
+        var taks = {
+            run: function(){
+                Ext.Ajax.request({
+                    url: 'visitors/notification',
+                    method: 'GET',
+                    success: function(result, request){
+                        var responseData = result.responseText;
+                        var jsonData = Ext.JSON.decode(responseData); 
+                        
+                        var count = jsonData.count;
+                        var companyId, visitorId, visitorName, contactNo, purpose,
+                            forwardedTo, requestStatus, statusRead;
+                        
+                        //if(jsonData.data[count-1] != null){
+                            companyId = jsonData.data.companyId;
+                            visitorId = jsonData.data.visitorId;
+                            visitorName = jsonData.data.visitorName;
+                            contactNo = jsonData.data.contactNo;
+                            purpose = jsonData.data.purpose;
+                            forwardedTo = jsonData.data.forwardedTo;
+                            requestStatus = jsonData.data.requestStatus;
+                            statusRead = jsonData.data.statusRead;
+                        //}
+                        //Ext.Msg.alert('Message', jsonData.data.companyId);
+                        
+                        
+                        var data = {
+                            visitorId: visitorId,
+                            visitorName: visitorName,
+                            contactNo: contactNo,
+                            purpose: purpose,
+                            companyId: companyId,
+                            forwardedTo: forwardedTo,
+                            requestStatus: requestStatus,
+                            statusRead: statusRead
+                        };
+                        var tpl = Ext.create('Ext.XTemplate', 
+                                        '<table cellpadding="5">',
+                                        '<tr>',
+                                        '<td>',
+                                        '<img src="util/visitorImage/{visitorId}" height="70" width="55" />',
+                                        '</td>',
+                                        '<td>&nbsp</td>',
+                                        '<td valign="top">',
+                                        '<b>{visitorName}</b><br>',
+                                        '{contactNo}<br>',
+                                        '{purpose}<br>',
+                                        '</td>',
+                                        '</tr>',
+                                        '</table>'); 
+                        tpl.compile();
+                        
+                        var win = Ext.create('Ext.window.Window',{
+                           title: 'Notification('+count+")",
+                           id: visitorId,
+                           height: 90,
+                           modal: true,
+                           width: 250,
+                           target: 'mainSouthPanel',
+                           items: [
+                                   {
+                                    xtype: 'panel',
+                                    id: 'notificationPanel',
+                                    width: '100%',
+                                    height: '100%',
+                                    tpl: tpl
+                                   }
+                               ]
+                            });
+
+                        if(count > parseInt(currentNotification)){
+                            //Ext.Msg.alert('Notification', currentNotification);
+                            Ext.getCmp('currentNotificationButton').setText(count);
+                            win.show();
+                            win.setPosition(700, 10, true);
+                            tpl.overwrite(Ext.getCmp('notificationPanel').body, data);
+                        }
+                        currentNotification = count;
+                    },
+                    failure: function(form, action){
+                           if(action.failureType == Ext.form.Action.CLIENT_INVALID){
+                               Ext.Msg.alert("Cannot Submit", "Some fields are still invalid! ");
+                           }
+                           if(action.failureType == Ext.form.Action.CONNECT_FAILURE){
+                               Ext.Msg.alert("Failure","Server communication failure: "+
+                               action.response.status+' '+action.response.statusText);
+                           }
+                           if(action.failuretype == Ext.form.Action.SERVER_INVALID){
+                               Ext.Mst.alert("Warning", "action.result.errormsg");
+                           }
+                     }
+                  });
+            },
+            interval: 2000 // 2 Second
+        }
+        Ext.TaskManager.start(taks);
+    },
     
     
     createMenuTree : function(){
@@ -58,14 +162,17 @@ Ext.define('Visitors.view.viewport.UserMainViewport', {
             split:true,
             autoScroll:true,
             useArrows: true,
-            store: Ext.create('Visitors.data.store.MenuStore'),
+            //store: Ext.create('Visitors.data.store.MenuStore'),
+            store: Ext.create('Visitors.data.store.DynamicMenuStore'),
             listeners:{
                 itemclick: function(view,rec,item,index,eventObj){
                     var component = null;
                     var viewport = Ext.getCmp('userMainViewport');
                     
                     if(rec.get('id') == 1){
-                         component = Ext.create('Visitors.view.timing.TimingDefinition',{
+                         component = Ext.create('Visitors.view.visitors.SearchVisitor',{
+                            title: 'Search Visitors',
+                            iconCls: 'userIcon',
                             closable: true
                         });
                     }
@@ -109,7 +216,7 @@ Ext.define('Visitors.view.viewport.UserMainViewport', {
                                 closable: true
                             });
                        }
-                       
+ 
                     }
                     if(rec.get('id') == 7){
                         component = Ext.create('Visitors.view.reason.Reason',{
@@ -117,6 +224,18 @@ Ext.define('Visitors.view.viewport.UserMainViewport', {
                             height: '100%',
                             closable: true
                         });
+                    }
+                    //8 is book for Request Dashboard
+                    if(rec.get('id') == 9){
+                        if(Ext.getCmp('visitorsEntryPoint') == null) {
+                           component = Ext.create('Visitors.view.visitors.VisitorsEntry',{
+                                title: 'Request List',
+                                closable: true
+                            });
+                           var empId = Ext.getCmp('loggedUserId').getValue(); 
+                           component.setEmployeeId(empId);
+                           component.setRequesteeInfoHidden(true);
+                       }
                     }
                     //show component in center panel
                     var tabContainer = Ext.getCmp('centerTabPanel');
@@ -133,12 +252,10 @@ Ext.define('Visitors.view.viewport.UserMainViewport', {
     createUserTree : function(){
         var tree = Ext.create('Ext.tree.Panel', {
             id:'UserTree',
-            title: 'Online Users',
+            //title: 'Online Users',
             rootVisible:false,
             lines:false,
             height: '50%',
-            collapsible: true,
-            animCollapse: true,
             autoScroll:true,
             useArrows: true,
             multiSelect: true,
@@ -155,24 +272,25 @@ Ext.define('Visitors.view.viewport.UserMainViewport', {
                         text: 'Assigned To',
                         flex: 1,
                         dataIndex: 'leaf',
-                        sortable: true
+                        sortable: true,
+                        hidden: true
                     }]
         });
 
         return tree;
     },
 
-    
-    getLoginInfo: function(){
+    setUiByLogin: function(){
       Ext.Ajax.request({
         url: 'login/loginInfo',
         method: 'GET',
         success: function(result, request){
             var responseData = result.responseText;
             var profileButton = Ext.getCmp('mainProfileButton');
+            var loggedUserIdHidden = Ext.getCmp('loggedUserId');
             var jsonData = Ext.JSON.decode(responseData); 
-            //profileButton.setText(jsonData.data.loginId);
             profileButton.setText(jsonData.data.loginId);
+            loggedUserIdHidden.setValue(jsonData.data.empId);
         },
         failure: function(form, action){
                if(action.failureType == Ext.form.Action.CLIENT_INVALID){
@@ -201,12 +319,15 @@ Ext.define('Visitors.view.viewport.UserMainViewport', {
             items: [
                 {
                   xtype: 'panel',
-                  width: 200,
+                  id: 'optionPanel',
+                  width: 170,
                   region: 'west',
                   split: true,
                   collapsible: true,
                   items: [
-                            me.createMenuTree()
+                            me.createMenuTree(),
+                            //me.createUserTree()
+                            
                       ]
                 },
                 {
@@ -222,15 +343,53 @@ Ext.define('Visitors.view.viewport.UserMainViewport', {
                                     xtype: 'button',
                                     id: 'mainProfileButton',
                                     text: 'shekharkumargupta@gmail.com',
-                                    iconCls: 'activeUserIcon'
+                                    iconCls: 'activeUserIcon',
+                                    handler: function(){
+                                        var changePassword = Ext.create("Visitors.view.login.PasswordChange",{
+                                        });
+                                        me.createWindow(changePassword, 'Change Password', '29%', '40%');
+                                        //me.startMenuOff();
+                                        changePassword.getLoginInfo();
+                                    }
+                                },
+                                {
+                                    xtype: 'hidden',
+                                    id: 'loggedUserId',
+                                    value: '0'
                                 },
                                 {
                                     xtype: 'tbfill'
                                 },
                                 {
+                                    xtype: 'displayfield',
+                                    value: 'Notifications:'
+                                },
+                                {
                                     xtype: 'button',
+                                    id: 'currentNotificationButton',
+                                    text: '0',
+                                    value: '0'
+                                },
+                                '=',
+                                {
+                                    xtype: 'button',
+                                    id: 'logoutButton',
                                     text: 'Logout',
-                                    iconCls: 'logoutIcon'
+                                    iconCls: 'logoutIcon',
+                                    handler: function(){
+                                        Ext.Ajax.request({
+                                                url	: 'login/logout',
+                                                method	: 'GET',
+                                                success	: function(){
+                                                             Ext.Msg.alert('Confirm', 'Successfully Logout');
+                                                             window.location = 'login';
+                                                            },
+                                                failure	: function(){
+                                                             Ext.Msg.alert('Error', 'Failure');
+                                                            }			
+                                        });
+
+                                    }
                                 }
                             ]
                         }
@@ -245,12 +404,18 @@ Ext.define('Visitors.view.viewport.UserMainViewport', {
                 },
                 {
                     xtype: 'panel',
+                    id: 'mainSouthPanel',
                     height: 80,
                     collapsible: true,
-                    title: 'My Panel',
+                    collapsed: true,
+                    title: 'Message Panel',
                     titleCollapse: true,
                     region: 'south',
-                    split: true
+                    split: true,
+                    html: '<p align="right"><br>'+
+                           'A Product By: <b>OPGEA Systems</b>&nbsp<br>'+
+                           '<b>www.opgea.com</b>&nbsp'+
+                           '</p>'
                 }
             ]
         });

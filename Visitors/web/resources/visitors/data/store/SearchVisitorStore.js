@@ -1,17 +1,17 @@
-Ext.define('Visitors.data.store.EmployeeStore',{
+Ext.define('Visitors.data.store.SearchVisitorStore',{
     extend: 'Ext.data.Store',
-    id: 'employeeStore',
+    id: 'searchVisitorStore',
     
 
     constructor: function(cfg){
         var me = this;
         cfg = cfg || {};
         me.callParent([Ext.apply({
-            autoLoad: true,
-            storeId: 'employeeStore',
+            autoLoad: false,
+            storeId: 'searchVisitorStore',
             proxy:{
                 type: 'ajax',
-                url: 'user/empList',
+                url: 'visitors/searchVisitors',
                 reader: {
                     type: 'json',
                     root: 'data'
@@ -22,46 +22,52 @@ Ext.define('Visitors.data.store.EmployeeStore',{
                     name: 'id'
                 },
                 {
-                    name: 'firstName'
+                    name: 'employeeId'  
                 },
                 {
-                    name: 'middleInitial'
+                    name: 'employeeName'
                 },
                 {
-                    name: 'lastName'
+                    name: 'companyId' 
+                }, 
+                {
+                    name: 'companyName'
                 },
                 {
-                    name: 'phone1'
+                    name: 'name'
                 },
                 {
-                    name: 'email'
+                    name: 'contactNo'
                 },
                 {
-                    name: 'empCode'
+                    name: 'address'
                 },
                 {
-                    name: 'departmentName'
+                    name: 'fromCompany'
                 },
                 {
-                    name: 'departmentId'
+                    name: 'purpose'
                 },
                 {
-                    name: 'designationName'
+                    name: 'status'
                 },
                 {
-                    name: 'designationId'
+                    name: 'statusString'
                 },
                 {
-                    name: 'picture'
+                    name: 'inTime'
                 },
                 {
-                    name: 'employeeType'
+                    name: 'outTime'
                 },
                 {
-                    name: 'employeeTypeName'
+                    name: 'createdBy'
                 },
                 {
-                    name: 'onlineStatusId'
+                    name: 'forwardedToMe'
+                },
+                {
+                    name: 'visitingDate'
                 }
             ]
         }, cfg)])
