@@ -1,16 +1,16 @@
-Ext.define('Visitors.data.store.DesignationStore', {
+Ext.define('Visitors.data.store.EmployeeTypeStore', {
     extend: 'Ext.data.Store',
-    id: 'designationStore',
+    id: 'employeeTypeStore',
     
     constructor: function(cfg) {
         var me = this;
         cfg = cfg || {};
         me.callParent([Ext.apply({
             autoLoad: true,
-            storeId: 'destinationStore',
+            storeId: 'employeeTypeStore',
             proxy: {
                 type: 'ajax',
-                url: 'designation/designationList',
+                url: 'util/employeeTypeList',
                 reader: {
                     type: 'json',
                     root: 'data'
@@ -18,16 +18,10 @@ Ext.define('Visitors.data.store.DesignationStore', {
             },
             fields: [
                 {
-                    name: 'departmentId'
-                },
-                {
-                    name: 'departmentName'  
-                },
-                {
                     name: 'id'
                 },
                 {
-                    name: 'name'
+                    name: 'value'
                 }
             ]
         }, cfg)]);

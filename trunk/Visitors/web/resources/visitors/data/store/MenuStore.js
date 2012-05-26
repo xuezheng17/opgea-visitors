@@ -38,6 +38,15 @@ Ext.define('Visitors.data.store.MenuStore',{
                         ]
                     }
                     */
+                   ,
+                   {
+                       text: 'Associates',
+                       expanded: true,
+                       iconCls: 'folderIcon',
+                       children: [
+                           { id: '9', text:'Request List', iconCls:'userIcon', leaf:true }
+                       ]
+                   }
                 ]
                 
                 }

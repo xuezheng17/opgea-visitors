@@ -86,7 +86,7 @@ Ext.define('Visitors.view.designation.Designation', {
                                                     departmentId: departmentId
                                                 }
                                             });  
-                                           
+                                           form.reset();
                                         },
                                         failure:function(form, action){
                                            if(action.failureType == Ext.form.Action.CLIENT_INVALID){
@@ -132,6 +132,18 @@ Ext.define('Visitors.view.designation.Designation', {
                             dataIndex: 'name',
                             text: 'Name',
                             flex:1
+                        },
+                        {
+                            xtype: 'gridcolumn',
+                            dataIndex: 'departmentId',
+                            text: 'DepartmentId',
+                            hidden: true
+                        },
+                        {
+                            xtype: 'gridcolumn',
+                            dataIndex: 'departmentName',
+                            text: 'DepartmentName',
+                            hidden: true
                         }
                     ],
                     dockedItems: [

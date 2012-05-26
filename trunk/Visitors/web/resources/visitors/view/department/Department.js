@@ -62,7 +62,7 @@ Ext.define('Visitors.view.department.Department', {
                                            departmentStore.load(function(records, operation, success) {
                                             console.log('Department created and loaded in list.');
                                            });   
-                                           
+                                           form.reset();
                                         },
                                         failure:function(form, action){
                                            if(action.failureType == Ext.form.Action.CLIENT_INVALID){
@@ -83,6 +83,7 @@ Ext.define('Visitors.view.department.Department', {
                         {
                             xtype: 'button',
                             text: 'Reset',
+                            hidden: true,
                             handler: function(){
                                 var form = this.up('form').getForm();
                                 form.reset();

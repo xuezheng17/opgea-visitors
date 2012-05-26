@@ -1,13 +1,13 @@
 Ext.define('Visitors.data.store.VisitorStore',{
     extend: 'Ext.data.Store',
-    id: 'visitorStore',
+    //id: 'visitorStore',
     
 
     constructor: function(cfg){
         var me = this;
         cfg = cfg || {};
         me.callParent([Ext.apply({
-            autoLoad: true,
+            autoLoad: false,
             storeId: 'visitorStore',
             proxy:{
                 type: 'ajax',
@@ -59,6 +59,12 @@ Ext.define('Visitors.data.store.VisitorStore',{
                 },
                 {
                     name: 'outTime'
+                },
+                {
+                    name: 'createdBy'
+                },
+                {
+                    name: 'forwardedToMe'
                 }
             ]
         }, cfg)])

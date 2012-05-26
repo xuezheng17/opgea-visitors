@@ -157,7 +157,7 @@ Ext.define('Visitors.view.company.CompanyBasicInfo', {
                                     form.submit({
                                        url: 'company/create',
                                        method:'POST',
-                                       waitMsg: 'Submiting form...',
+                                       waitMsg: 'Creating Company...',
                                        success: function(form, action){
                                            Ext.Msg.alert('Success',"LoginId: <b>"+
                                                action.result.data+"</b> created successfully!"

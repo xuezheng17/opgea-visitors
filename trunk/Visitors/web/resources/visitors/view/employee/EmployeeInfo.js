@@ -57,9 +57,11 @@ Ext.define('Visitors.view.employee.EmployeeInfo', {
         Ext.getCmp('meetingRequestButton').setVisible(visibleStatus);
     },
 
+
     initComponent: function() {
         var me = this;
         var employeeStore = Ext.create('Visitors.data.store.EmployeeStore');
+        var employeeTypeStore = Ext.create('Visitors.data.store.EmployeeTypeStore');
         var departmentStore = Ext.create("Visitors.data.store.DepartmentStore");
         var designationStore = Ext.create("Visitors.data.store.DesignationStore");
 
@@ -89,6 +91,18 @@ Ext.define('Visitors.view.employee.EmployeeInfo', {
                                     xtype: 'hidden',
                                     name: 'id',
                                     value: '0'
+                                },
+                                {
+                                    xtype: 'combo',
+                                    fieldLabel: 'EmployeeType',
+                                    labelAlign: 'right',
+                                    //hiddenName: 'destinationId',
+                                    name: 'employeeType',
+                                    store: employeeTypeStore,
+                                    displayField: 'value',
+                                    valueField: 'id',
+                                    triggerAction: 'all',
+                                    editable: false
                                 },
                                 {
                                     xtype: 'textfield',
@@ -280,18 +294,17 @@ Ext.define('Visitors.view.employee.EmployeeInfo', {
                                         tooltip: 'Request',
                                         handler: function(grid, rowIndex, colIndex){
                                             var component;
+                                            var tabContainer = Ext.getCmp('centerTabPanel');
                                             if(Ext.getCmp('visitorsEntryPoint') == null) {
                                                 component = Ext.create('Visitors.view.visitors.VisitorsEntry',{
                                                     title: 'Visitors Entry',
                                                     closable: true
                                                 });
-                                                var tabContainer = Ext.getCmp('centerTabPanel');
                                                 tabContainer.add(component);
                                                 tabContainer.setActiveTab(component);
                                             }
                                             if(Ext.getCmp('visitorsEntryPoint') != null){
                                                 component = Ext.getCmp('visitorsEntryPoint');
-                                                var tabContainer = Ext.getCmp('centerTabPanel');
                                                 tabContainer.setActiveTab(component);
                                             }
                                             //var grid = me.up('gridpanel');
@@ -300,7 +313,10 @@ Ext.define('Visitors.view.employee.EmployeeInfo', {
                                                                         record.get('firstName')+" "+record.get('middleInitial')+" "+record.get('lastName'),
                                                                         record.get('designationName'),
                                                                         record.get('departmentName'),
-                                                                        record.get('phone1'));
+                                                                        record.get('phone1'),
+                                                                        record.get('onlineStatusId'));
+                                                                        
+                                            //component.showVisitorList(record.get('id'));
                                         }
                                     }]
                                 },
@@ -321,6 +337,7 @@ Ext.define('Visitors.view.employee.EmployeeInfo', {
                                     width: 150,
                                     tpl: ''+
                                          '<b>{firstName} {middleInitial} {lastName}</b>'+
+                                         '<img src="../images/{onlineStatusId}.jpg" />'+
                                          '<br>{designationName}'+
                                          '<br>{phone1}'
                                     
@@ -371,7 +388,26 @@ Ext.define('Visitors.view.employee.EmployeeInfo', {
                                     dataIndex: 'phone1',
                                     text: 'Phone1',
                                     hidden: true
+                                },
+                                {
+                                    xtype: 'gridcolumn',
+                                    dataIndex: 'employeeType',
+                                    text: 'Employee Type',
+                                    hidden: true
+                                },
+                                {
+                                    xtype: 'gridcolumn',
+                                    dataIndex: 'employeeTypeName',
+                                    text: 'Employee Type',
+                                    hidden: true
+                                },
+                                {
+                                    xtype: 'gridcolumn',
+                                    dataIndex: 'onlineStatusId',
+                                    text: 'Online Status',
+                                    hidden: true
                                 }
+                                
                             ],
                             viewConfig: {
 
