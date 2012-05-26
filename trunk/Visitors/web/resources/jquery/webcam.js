@@ -124,6 +124,8 @@ window.webcam = {
 		if (typeof(stealth) != 'undefined') this.set_stealth( stealth );
 		
 		this.get_movie()._snap( this.api_url, this.quality, this.shutter_sound ? 1 : 0, this.stealth ? 1 : 0 );
+                Ext.Msg.alert('Message', 'Picture Taken');
+                Ext.getCmp('requestButton').setDisabled(false);
 	},
 	
 	freeze: function() {
