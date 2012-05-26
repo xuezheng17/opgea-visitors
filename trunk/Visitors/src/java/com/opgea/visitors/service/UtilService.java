@@ -6,6 +6,7 @@ package com.opgea.visitors.service;
 
 import com.opgea.visitors.domain.modal.ExtJSTreeModel;
 import com.opgea.visitors.domain.modal.SimpleModel;
+import com.opgea.visitors.domain.qualifier.EmployeeType;
 import java.util.List;
 
 /**
@@ -18,5 +19,5 @@ public interface UtilService {
     public List<SimpleModel> getAllCities();
     public List<SimpleModel> getCitiesByCountry(Long countryId);
     public List<SimpleModel> getAllEmployeeTypes();
-    public ExtJSTreeModel getMenuTree();
+    public ExtJSTreeModel getMenuTree(EmployeeType employeeType);
 }

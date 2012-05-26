@@ -8,7 +8,7 @@ package com.opgea.visitors.domain.qualifier;
  *
  * @author Ramesh
  */
-public enum RequestStatusQualifier {
-
-    NEW_REQUEST, WAIT, CALL, NOT_INTERESTED, CHECK_IN, MEETING_DONE, CHECK_OUT, CAN_NOT_MEET
+public enum ReplyQualifier {
+    
+    YES, NO
 }

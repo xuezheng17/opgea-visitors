@@ -13,6 +13,7 @@ public class DesignationDTO {
     private Long id;
     private String name;
     private Long departmentId;
+    private String departmentName;
 
     public DesignationDTO() {
     }
@@ -45,6 +46,14 @@ public class DesignationDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
 
     @Override

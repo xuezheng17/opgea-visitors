@@ -14,6 +14,9 @@ import com.opgea.visitors.domain.entities.Department;
 import com.opgea.visitors.domain.entities.Designation;
 import com.opgea.visitors.domain.entities.Employee;
 import com.opgea.visitors.domain.entities.Login;
+import com.opgea.visitors.domain.modal.EmployeeStatus;
+import com.opgea.visitors.domain.qualifier.EmployeeType;
+import com.opgea.visitors.service.ApplicationService;
 import com.opgea.visitors.service.EmployeeService;
 import com.opgea.visitors.web.dto.EmployeeDTO;
 import java.util.ArrayList;
@@ -39,6 +42,8 @@ public class EmployeeServiceImpl implements EmployeeService{
     private DepartmentDAO departmentDAO;
     @Autowired
     private LoginDAO loginDAO;
+    @Autowired
+    private ApplicationService applicationService;
     
     @Override
     public EmployeeDTO create(EmployeeDTO employeeDTO) {
@@ -52,6 +57,7 @@ public class EmployeeServiceImpl implements EmployeeService{
             employee = new Employee();
         }
         
+        employee.setEmployeeType(EmployeeType.values()[employeeDTO.getEmployeeType()]);
         employee.setFirstName(employeeDTO.getFirstName());
         employee.setMiddleInitial(employeeDTO.getMiddleInitial());
         employee.setLastName(employeeDTO.getLastName());
@@ -95,6 +101,8 @@ public class EmployeeServiceImpl implements EmployeeService{
         Employee employee = employeeDAO.find(id);
         EmployeeDTO employeeDTO = new EmployeeDTO();
         employeeDTO.setId(employee.getId());
+        employeeDTO.setEmployeeType(employee.getEmployeeType().ordinal());
+        employeeDTO.setEmployeeTypeName(employee.getEmployeeType().toString());
         employeeDTO.setFirstName(employee.getFirstName());
         employeeDTO.setMiddleInitial(employee.getMiddleInitial());
         employeeDTO.setLastName(employee.getLastName());
@@ -111,6 +119,11 @@ public class EmployeeServiceImpl implements EmployeeService{
             employeeDTO.setDepartmentId(employee.getDepartment().getId());
             employeeDTO.setDepartmentName(employee.getDepartment().getName());
         }
+        EmployeeStatus employeeStatus = new EmployeeStatus();
+        employeeStatus.setCompanyId(employeeDTO.getCompanyId());
+        employeeStatus.setEmployeeId(employeeDTO.getId());
+        employeeDTO.setOnlineStatusId(applicationService.findEmployeeOnlineStatus(employeeStatus).ordinal());
+        
         return employeeDTO;
     }
 
@@ -121,6 +134,8 @@ public class EmployeeServiceImpl implements EmployeeService{
         for(Employee employee : employees){
             EmployeeDTO employeeDTO = new EmployeeDTO();
             employeeDTO.setId(employee.getId());
+            employeeDTO.setEmployeeType(employee.getEmployeeType().ordinal());
+            employeeDTO.setEmployeeTypeName(employee.getEmployeeType().toString());
             employeeDTO.setFirstName(employee.getFirstName());
             employeeDTO.setMiddleInitial(employee.getMiddleInitial());
             employeeDTO.setLastName(employee.getLastName());
@@ -137,6 +152,10 @@ public class EmployeeServiceImpl implements EmployeeService{
                 employeeDTO.setDepartmentId(employee.getDepartment().getId());
                 employeeDTO.setDepartmentName(employee.getDepartment().getName());
             }
+            EmployeeStatus employeeStatus = new EmployeeStatus();
+            employeeStatus.setCompanyId(employeeDTO.getCompanyId());
+            employeeStatus.setEmployeeId(employeeDTO.getId());
+            employeeDTO.setOnlineStatusId(applicationService.findEmployeeOnlineStatus(employeeStatus).ordinal());
             employeeList.add(employeeDTO);
         }
         return employeeList;
@@ -149,6 +168,8 @@ public class EmployeeServiceImpl implements EmployeeService{
         for(Employee employee : employees){
             EmployeeDTO employeeDTO = new EmployeeDTO();
             employeeDTO.setId(employee.getId());
+            employeeDTO.setEmployeeType(employee.getEmployeeType().ordinal());
+            employeeDTO.setEmployeeTypeName(employee.getEmployeeType().toString());
             employeeDTO.setFirstName(employee.getFirstName());
             employeeDTO.setMiddleInitial(employee.getMiddleInitial());
             employeeDTO.setLastName(employee.getLastName());
@@ -165,6 +186,10 @@ public class EmployeeServiceImpl implements EmployeeService{
                 employeeDTO.setDepartmentId(employee.getDepartment().getId());
                 employeeDTO.setDepartmentName(employee.getDepartment().getName());
             }
+            EmployeeStatus employeeStatus = new EmployeeStatus();
+            employeeStatus.setCompanyId(employeeDTO.getCompanyId());
+            employeeStatus.setEmployeeId(employeeDTO.getId());
+            employeeDTO.setOnlineStatusId(applicationService.findEmployeeOnlineStatus(employeeStatus).ordinal());
             employeeList.add(employeeDTO);
         }
         return employeeList;
@@ -177,6 +202,8 @@ public class EmployeeServiceImpl implements EmployeeService{
         for(Employee employee : employees){
             EmployeeDTO employeeDTO = new EmployeeDTO();
             employeeDTO.setId(employee.getId());
+            employeeDTO.setEmployeeType(employee.getEmployeeType().ordinal());
+            employeeDTO.setEmployeeTypeName(employee.getEmployeeType().toString());
             employeeDTO.setFirstName(employee.getFirstName());
             employeeDTO.setMiddleInitial(employee.getMiddleInitial());
             employeeDTO.setLastName(employee.getLastName());
@@ -193,6 +220,10 @@ public class EmployeeServiceImpl implements EmployeeService{
                 employeeDTO.setDepartmentId(employee.getDepartment().getId());
                 employeeDTO.setDepartmentName(employee.getDepartment().getName());
             }
+            EmployeeStatus employeeStatus = new EmployeeStatus();
+            employeeStatus.setCompanyId(employeeDTO.getCompanyId());
+            employeeStatus.setEmployeeId(employeeDTO.getId());
+            employeeDTO.setOnlineStatusId(applicationService.findEmployeeOnlineStatus(employeeStatus).ordinal());
             employeeList.add(employeeDTO);
         }
         return employeeList;

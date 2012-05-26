@@ -4,6 +4,7 @@
  */
 package com.opgea.visitors.domain.entities;
 
+import com.opgea.visitors.domain.qualifier.EmployeeType;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -15,6 +16,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -23,10 +25,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Ramesh
  */
 @Entity
+@Table(name = "employee")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Employee.findAll", query = "SELECT e FROM Employee e"),
-    @NamedQuery(name = "Employee.findAllById", query = "SELECT e FROM Employee e WHERE e.company.id = :companyId"),
+    @NamedQuery(name = "Employee.findAllById", query = "SELECT e FROM Employee e WHERE e.id = :id"),
     @NamedQuery(name = "Employee.findById", query = "SELECT e FROM Employee e WHERE e.id = :id"),
     @NamedQuery(name = "Employee.findByEmail", query = "SELECT e FROM Employee e WHERE e.email = :email"),
     @NamedQuery(name = "Employee.findByFirstName", query = "SELECT e FROM Employee e WHERE e.firstName = :firstName"),
@@ -48,6 +51,7 @@ public class Employee implements Serializable {
     private Date dob;
     private String email;
     private String contactNo;
+    private EmployeeType employeeType;
     
     @Lob
     @Column(nullable = true, length = 2097152)
@@ -160,6 +164,14 @@ public class Employee implements Serializable {
 
     public void setPicture(byte[] picture) {
         this.picture = picture;
+    }
+
+    public EmployeeType getEmployeeType() {
+        return employeeType;
+    }
+
+    public void setEmployeeType(EmployeeType employeeType) {
+        this.employeeType = employeeType;
     }
 
     

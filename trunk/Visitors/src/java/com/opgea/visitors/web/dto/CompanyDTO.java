@@ -9,7 +9,8 @@ package com.opgea.visitors.web.dto;
  * @author Ramesh
  */
 public class CompanyDTO {
-    
+
+    private Long companyId;
     private Long categoryId;
     private Long countryId;
     private Long cityId;
@@ -22,6 +23,8 @@ public class CompanyDTO {
     private String lastName;
     private String email;
     private String contactNo;
+    
+    private Boolean isActive;
     
     
     
@@ -107,6 +110,22 @@ public class CompanyDTO {
 
     public void setMiddleInitial(String middleInitial) {
         this.middleInitial = middleInitial;
+    }
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
     }
 
     

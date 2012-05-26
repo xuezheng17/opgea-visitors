@@ -28,7 +28,10 @@ public class VisitorDTO {
     private String employeeName;
     private Long companyId;
     private String companyName;
-    private Byte[] picture;
+    private byte[] picture;
+    private Long createdBy;
+    private String forwardedToMe;
+    private String metaData;
 
     public String getAddress() {
         return address;
@@ -142,11 +145,11 @@ public class VisitorDTO {
         this.visitingDate = visitingDate;
     }
 
-    public Byte[] getPicture() {
+    public byte[] getPicture() {
         return picture;
     }
 
-    public void setPicture(Byte[] picture) {
+    public void setPicture(byte[] picture) {
         this.picture = picture;
     }
 
@@ -158,10 +161,51 @@ public class VisitorDTO {
         this.statusString = statusString;
     }
 
+    public Long getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(Long createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getForwardedToMe() {
+        return forwardedToMe;
+    }
+
+    public void setForwardedToMe(String forwardedToMe) {
+        this.forwardedToMe = forwardedToMe;
+    }
+
+    public String getMetaData() {
+        StringBuilder data = new StringBuilder();
+        data.append(this.name);
+        data.append(" ");
+        data.append(this.fromCompany);
+        data.append(" ");
+        data.append(this.contactNo);
+        data.append(" ");
+        data.append(this.visitingDate);
+        data.append(" ");
+        data.append(this.address);
+        data.append(" ");
+        data.append(this.purpose);
+        this.metaData = data.toString();
+        return metaData;
+    }
+
+    /*
+    public void setMetaData(String metaData) {
+        this.metaData = metaData;
+    }*/
+
     @Override
     public String toString() {
-        return "VisitorDTO{" + "id=" + id + ", name=" + name + ", contactNo=" + contactNo + ", address=" + address + ", purpose=" + purpose + ", status=" + status + ", visitingDate=" + visitingDate + ", inTime=" + inTime + ", outTime=" + outTime + ", employeeId=" + employeeId + ", employeeName=" + employeeName + ", companyId=" + companyId + ", companyName=" + companyName + '}';
+        return "VisitorDTO{" + "id=" + id + ", name=" + name + ", contactNo=" + contactNo + ", address=" + address + ", purpose=" + purpose + ", fromCompany=" + fromCompany + ", status=" + status + ", statusString=" + statusString + ", visitingDate=" + visitingDate + ", inTime=" + inTime + ", outTime=" + outTime + ", employeeId=" + employeeId + ", employeeName=" + employeeName + ", companyId=" + companyId + ", companyName=" + companyName + ", picture=" + picture + ", createdBy=" + createdBy + ", forwardedToMe=" + forwardedToMe + '}';
     }
+
+    
+
     
     
 
