@@ -11,7 +11,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>OPGEA Welcome</title>
+        <title>OPGEA Systems</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         
         <link rel="stylesheet" type="text/css" href="<spring:url value="/resources/visitors/css/clock.css" />" type="text/css" media="all"/>
@@ -33,7 +33,9 @@
         <script type="text/javascript" src="<spring:url value="/resources/visitors/view/employee/UploadEmployeeImage.js"/>"></script>
         <script type="text/javascript" src="<spring:url value="/resources/visitors/view/reason/Reason.js"/>"></script>
         <script type="text/javascript" src="<spring:url value="/resources/visitors/view/login/LoginForm.js"/>"></script>
+        <script type="text/javascript" src="<spring:url value="/resources/visitors/view/login/PasswordChange.js"/>"></script>
         <script type="text/javascript" src="<spring:url value="/resources/visitors/view/visitors/VisitorsEntry.js"/>"></script>
+        <script type="text/javascript" src="<spring:url value="/resources/visitors/view/visitors/SearchVisitor.js"/>"></script>
 
         <!--Store Imports-->
         <script type="text/javascript" src="<spring:url value="/resources/visitors/data/store/MenuStore.js"/>"></script>
@@ -43,15 +45,18 @@
         <script type="text/javascript" src="<spring:url value="/resources/visitors/data/store/DepartmentStore.js"/>"></script>
         <script type="text/javascript" src="<spring:url value="/resources/visitors/data/store/WorkstationStore.js"/>"></script>
         <script type="text/javascript" src="<spring:url value="/resources/visitors/data/store/EmployeeStore.js"/>"></script>
+        <script type="text/javascript" src="<spring:url value="/resources/visitors/data/store/EmployeeTypeStore.js"/>"></script>
         <script type="text/javascript" src="<spring:url value="/resources/visitors/data/store/ReasonOfStore.js"/>"></script>
         <script type="text/javascript" src="<spring:url value="/resources/visitors/data/store/DynamicMenuStore.js"/>"></script>
         <script type="text/javascript" src="<spring:url value="/resources/visitors/data/store/VisitorStore.js"/>"></script>
+        <script type="text/javascript" src="<spring:url value="/resources/visitors/data/store/SearchVisitorStore.js"/>"></script>
        
         <!-- Modal Imports-->
         <script type="text/javascript" src="<spring:url value="/resources/visitors/data/modal/TreeModal.js"/>"></script>
         
         <!-- Util -->
         <script type="text/javascript" src="<spring:url value="/resources/visitors/utiljs/OpgeaExtJSForm.js"/>"></script>
+        <script type="text/javascript" src="<spring:url value="/resources/visitors/utiljs/BusinessLogicValidation.js"/>"></script>
         
         <style type="text/css">
             .startMenuIcon{
@@ -111,7 +116,18 @@
             .checkOutIcon{
                 background-image: url(../images/check_out.gif);
             }
-            
+            .greenBallIcon{
+                background-image: url(../images/green_ball.jpg);
+            }
+            .orangeBallIcon{
+                background-image: url(../images/orange_ball.jpg);
+            }
+            .redBallIcon{
+                background-image: url(../images/red_ball.jpg);
+            }
+            .blackBallIcon{
+                background-image: url(../images/black_ball.jpg);
+            }
             
             .WAIT_ICON{
                 background-image: url(../images/user_orange.png);
@@ -167,16 +183,14 @@
                 var viewport = Ext.create("Visitors.view.viewport.UserMainViewport",{
                     id: 'userMainViewport'
                 });
-                viewport.getLoginInfo();
+                viewport.setUiByLogin();
                 Ext.QuickTips.init();
-                //setupCamera();       
+                setupCamera();     
+                viewport.getNotifications();
             });
         </script>
     </head>
     <body>
-        <div id="mainWrapper" style="background-color: silver;">
-            <div id="camera" style="background-color: gray;">Camera</div>
-            <div id="upload"></div>
-        </div>
+        <div id="camera" style="background-color: gray; text-align: center;" hidden="true">Camera</div>
     </body>
 </html>
