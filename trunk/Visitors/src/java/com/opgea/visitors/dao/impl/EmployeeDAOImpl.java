@@ -65,7 +65,7 @@ public class EmployeeDAOImpl implements EmployeeDAO{
     @Override
     public List<Employee> findAll() {
         Session session = sessionFactory.openSession();
-        Query query = session.getNamedQuery("Employee.findAll");
+        Query query = session.getNamedQuery("from Employee e");
         List<Employee> employees = query.list();
         session.close();
         return employees;
@@ -88,6 +88,23 @@ public class EmployeeDAOImpl implements EmployeeDAO{
         List<Employee> employees = query.list();
         System.out.println("Employee List size: "+employees.size());
         session.close();
+        return employees;
+    }
+
+    public List<Employee> searchEmployees(Long companyId, String searchKey) {
+        Session session = sessionFactory.openSession();
+        StringBuilder query = new StringBuilder();
+        query.append(" SELECT e FROM Employee e WHERE e.company.id = ");
+        query.append(companyId);
+        if(!searchKey.equalsIgnoreCase("")){
+            query.append(" AND e.metaData like ");
+            query.append("'%");
+            query.append(searchKey);
+            query.append("%'");
+        }
+        System.out.println("Search Query:"+query.toString());
+        Query queryObject = session.createQuery(query.toString());
+        List<Employee> employees =  queryObject.list();
         return employees;
     }
     

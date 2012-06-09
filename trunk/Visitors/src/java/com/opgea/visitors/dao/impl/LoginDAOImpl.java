@@ -55,8 +55,12 @@ public class LoginDAOImpl implements LoginDAO{
     @Override
     public Login find(String loginId) {
         Session session = sessionFactory.openSession();
+        /*
         Query query = session.getNamedQuery("Login.findByLoginId");
         query.setParameter("loginId", loginId);
+         * 
+         */
+        Query query = session.createQuery("from Login l WHERE l.loginId = '"+loginId+"'");
         Login login = (Login) query.uniqueResult();
         session.close();
         return login;
