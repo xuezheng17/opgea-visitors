@@ -52,6 +52,7 @@ public class Employee implements Serializable {
     private String email;
     private String contactNo;
     private EmployeeType employeeType;
+    private String metaData;
     
     @Lob
     @Column(nullable = true, length = 2097152)
@@ -172,6 +173,14 @@ public class Employee implements Serializable {
 
     public void setEmployeeType(EmployeeType employeeType) {
         this.employeeType = employeeType;
+    }
+
+    public String getMetaData() {
+        return metaData;
+    }
+
+    public void setMetaData(String metaData) {
+        this.metaData = metaData;
     }
 
     
