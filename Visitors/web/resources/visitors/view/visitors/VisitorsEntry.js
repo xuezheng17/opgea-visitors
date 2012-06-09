@@ -82,6 +82,11 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                 Ext.getCmp('requesteeActionButtonGroup').setDisabled(true);
             }
             if(employeeType == 'ADMIN'){
+                Ext.getCmp('receptionActionButtonGroup').setDisabled(true);
+                Ext.getCmp('receptionActionToolBar').setDisabled(true);
+                if(document.getElementById('camera') != null){
+                    document.getElementById('camera').hidden = true;
+                }
             }
         }
       })
@@ -222,7 +227,7 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                                             xtype: 'button',
                                             id: 'takePictureButton',
                                             text: 'Take Picture',
-                                            disabled: true,
+                                            disabled: false,
                                             handler: function(){
                                                 webcam.snap();
                                             }

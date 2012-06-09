@@ -62,6 +62,9 @@ Ext.define('Visitors.data.store.EmployeeStore',{
                 },
                 {
                     name: 'onlineStatusId'
+                },
+                {
+                    name: 'password'
                 }
             ]
         }, cfg)])

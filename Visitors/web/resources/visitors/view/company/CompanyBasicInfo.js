@@ -118,10 +118,17 @@ Ext.define('Visitors.view.company.CompanyBasicInfo', {
                             name: 'email',
                             fieldLabel: 'Email Id',
                             labelAlign: 'right',
-                            msgTarget: 'side',
-                            allowBlank: false,
+                            msgTarget: 'under',
                             emptyText: 'shekharkumargupta@example.com',
-                            anchor: '100%'
+                            anchor: '100%',
+                            vtype: 'email',
+                            allowBlank: false,
+                            invalidText: 'Email cannot be empty.',
+                            listeners: {
+                                blur : function(){
+                                    isExistingEmail(this.value);
+                                }
+                            }
                         },
                         {
                             xtype: 'textfield',
@@ -131,7 +138,7 @@ Ext.define('Visitors.view.company.CompanyBasicInfo', {
                             labelAlign: 'right',
                             msgTarget: 'side',
                             allowBlank: false,
-                            emptyText: '+919868351070',
+                            emptyText: '9868351070',
                             anchor: '100%'
                         }
                     ]
@@ -159,10 +166,8 @@ Ext.define('Visitors.view.company.CompanyBasicInfo', {
                                        method:'POST',
                                        waitMsg: 'Creating Company...',
                                        success: function(form, action){
-                                           Ext.Msg.alert('Success',"LoginId: <b>"+
-                                               action.result.data+"</b> created successfully!"
-                                                + "<br>Please check your email account for password.");
-                                           form.reset();
+                                           Ext.Msg.alert('Message', action.result.data);
+                                           //form.reset();
                                    },
                                        failure: function(form, action){
                                            if(action.failureType == Ext.form.Action.CLIENT_INVALID){

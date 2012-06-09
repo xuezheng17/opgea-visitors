@@ -82,10 +82,11 @@ Ext.define('Visitors.view.login.LoginForm', {
                                     waitMsg: 'Verifing...',
                                     url: 'login/verify',
                                     success: function(form, action){
-                                        Ext.Msg.alert('Message',action.result.data);
                                         var data = action.result.data;
                                         if(data == 'Success'){
                                             window.location = 'home';
+                                        }else{
+                                            Ext.Msg.alert('Message',action.result.data);
                                         }
                                     },
                                     failure: function(form, action){

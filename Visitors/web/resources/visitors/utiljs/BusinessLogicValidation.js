@@ -90,3 +90,28 @@ function isValidAction(action){
     }
     return success;
 }
+
+
+function isExistingEmail(emailId){
+    var status = false;
+    Ext.Ajax.request({
+       method: 'GET',
+       url: 'login/isExistingUser',
+       params:{emailId : emailId},
+       waitMsg: 'Processing...',
+       success: function ( result, request ) {
+              var jsonData = Ext.JSON.decode(result.responseText);
+              var resultMessage = jsonData.data;
+              if(resultMessage == 'YES'){
+                   Ext.Msg.alert('Message', "<b>"+emailId+'</b> already registered.');
+                   status = true;
+              }
+       },
+       failure: function ( result, request ) {
+           var jsonData = Ext.JSON.decode(result.responseText);
+           var resultMessage = jsonData.data;
+           Ext.Msg.alert('Error', resultMessage);
+       }
+    });
+    return status;
+}

@@ -58,6 +58,16 @@ Ext.define('Visitors.view.employee.EmployeeInfo', {
     },
 
 
+    searchEmployees: function(searchKey){
+       var employeeStore = Ext.getStore('employeeStore');
+       employeeStore.load({
+            url: 'user/searchEmployees',
+            params: {
+                searchKey: searchKey
+            }
+        });
+    },
+
     initComponent: function() {
         var me = this;
         var employeeStore = Ext.create('Visitors.data.store.EmployeeStore');
@@ -102,14 +112,16 @@ Ext.define('Visitors.view.employee.EmployeeInfo', {
                                     displayField: 'value',
                                     valueField: 'id',
                                     triggerAction: 'all',
-                                    editable: false
+                                    editable: false,
+                                    allowBlank: false
                                 },
                                 {
                                     xtype: 'textfield',
                                     name: 'firstName',
                                     fieldLabel: 'First Name',
                                     labelAlign: 'right',
-                                    anchor: '100%'
+                                    anchor: '100%',
+                                    allowBlank: false
                                 },
                                 {
                                     xtype: 'textfield',
@@ -143,6 +155,7 @@ Ext.define('Visitors.view.employee.EmployeeInfo', {
                                     valueField: 'id',
                                     triggerAction: 'all',
                                     editable: false,
+                                    allowBlank: false,
                                     listeners:{
                                         select:function(){
                                            var designationCombo = Ext.getCmp('designatinoCombo') ;
@@ -168,7 +181,8 @@ Ext.define('Visitors.view.employee.EmployeeInfo', {
                                     valueField: 'id',
                                     triggerAction: 'all',
                                     editable: false,
-                                    disabled: true
+                                    disabled: true,
+                                    allowBlank: false
                                 }
                             ]
                         },
@@ -182,8 +196,17 @@ Ext.define('Visitors.view.employee.EmployeeInfo', {
                                     name: 'email',
                                     fieldLabel: 'Email Id',
                                     labelAlign: 'right',
-                                    msgTarget: 'side',
-                                    anchor: '100%'
+                                    msgTarget: 'under',
+                                    anchor: '100%',
+                                    vtype: 'email',
+                                    allowBlank: false,
+                                    invalidText: 'Email cannot be empty.',
+                                    listeners: {
+                                        blur : function(){
+                                            //Ext.Msg.alert('Message','Blur');
+                                            isExistingEmail(this.value);
+                                        }
+                                    }
                                 },
                                 {
                                     xtype: 'textfield',
@@ -226,15 +249,12 @@ Ext.define('Visitors.view.employee.EmployeeInfo', {
                                                 form.submit({
                                                    enctype: 'multipart/form-data',
                                                    url: 'user/create',
-                                                   mevthod:'POST',
+                                                   method:'POST',
                                                    waitMsg: 'Processing...',
                                                    success: function(form, action){
-                                                       //Ext.Msg.alert('Message','Success!');
-                                                       
                                                        Ext.Msg.alert('Success',action.result.data);
-                                                       //var store = Ext.getStore('employeeStore');
-                                                       employeeStore.load(function(records, operation, success) {
-                                                        console.log('Employee created and loaded in list.');
+                                                            employeeStore.load(function(records, operation, success) {
+                                                            console.log('Employee created and loaded in list.');
                                                        });                                                       
                                                        
                                                     },
@@ -273,6 +293,7 @@ Ext.define('Visitors.view.employee.EmployeeInfo', {
                     xtype: 'panel',
                     //title: 'Employee List',
                     region: 'center',
+                    autoScroll: true,
                     items: [
                         {
                             xtype: 'gridpanel',
@@ -280,8 +301,8 @@ Ext.define('Visitors.view.employee.EmployeeInfo', {
                             store: employeeStore,
                             columnLines: true,
                             autoHeight: true,
-                            autoScroll: true,
                             selType: 'rowmodel',
+                            autoScroll: true,
                             columns: [
                                 {
                                     text: '',
@@ -406,6 +427,12 @@ Ext.define('Visitors.view.employee.EmployeeInfo', {
                                     dataIndex: 'onlineStatusId',
                                     text: 'Online Status',
                                     hidden: true
+                                },
+                                {
+                                    xtype: 'gridcolumn',
+                                    dataIndex: 'password',
+                                    text: 'Password',
+                                    hidden: false
                                 }
                                 
                             ],
@@ -433,13 +460,17 @@ Ext.define('Visitors.view.employee.EmployeeInfo', {
                                 },
                                 {
                                     xtype: 'textfield',
-                                    //id: 'employeeSearchKeyTF',
+                                    id: 'employeeSearchKeyTF',
                                     name: 'searchkey'
                                 },
                                 {
                                     xtype: 'button',
                                     //text:'Search',
-                                    iconCls: 'searchIcon'
+                                    iconCls: 'searchIcon',
+                                    handler: function(){
+                                        var searchKeyValue = Ext.getCmp('employeeSearchKeyTF').value;
+                                        me.searchEmployees(searchKeyValue);
+                                    }
                                 },
                                 {
                                     xtype: 'button',
