@@ -4,8 +4,9 @@
  */
 package com.opgea.visitors.web.controller;
 
-import com.opgea.visitors.domain.modal.JsonModelMap;
+import com.opgea.visitors.domain.model.JsonModelMap;
 import com.opgea.visitors.service.CompanyService;
+import com.opgea.visitors.service.LoginService;
 import com.opgea.visitors.web.dto.CompanyDTO;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ public class CompanyController {
     
     @Autowired
     private CompanyService companyService;
+    @Autowired
+    private LoginService loginService;
     
     @RequestMapping(method= RequestMethod.GET)
     private String show(){
@@ -33,8 +36,12 @@ public class CompanyController {
     
     @RequestMapping(method= RequestMethod.POST, value="create")
     public @ResponseBody Map<String, Object> create(CompanyDTO companyDTO){
-        companyService.create(companyDTO); 
-        System.out.println("Cms >> PostCreate:");
-        return JsonModelMap.success().data(companyDTO.getEmail());
+        if(loginService.find(companyDTO.getEmail()) == null){
+            companyService.create(companyDTO); 
+            return JsonModelMap.success().data("Login Id <b>"+companyDTO.getEmail()+"</b> has created successfully!"
+                                                + "<br>Please check your email account for password.");
+        }else{
+            return JsonModelMap.success().data("<b>"+companyDTO.getEmail()+"</b> is already register.<br>Contact us if you forgot your password.");
+        }
     }
 }

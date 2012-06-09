@@ -5,10 +5,10 @@
 package com.opgea.visitors.web.controller;
 
 import com.opgea.constraints.SessionConstraints;
-import com.opgea.visitors.domain.modal.ExtJSTreeModel;
-import com.opgea.visitors.domain.modal.JsonModelMap;
-import com.opgea.visitors.domain.modal.SessionData;
-import com.opgea.visitors.domain.modal.SimpleModel;
+import com.opgea.visitors.domain.model.ExtJSTreeModel;
+import com.opgea.visitors.domain.model.JsonModelMap;
+import com.opgea.visitors.domain.model.SessionData;
+import com.opgea.visitors.domain.model.SimpleModel;
 import com.opgea.visitors.domain.qualifier.EmployeeType;
 import com.opgea.visitors.service.EmployeeService;
 import com.opgea.visitors.service.UtilService;

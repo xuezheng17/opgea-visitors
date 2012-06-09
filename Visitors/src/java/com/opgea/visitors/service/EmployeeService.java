@@ -4,6 +4,7 @@
  */
 package com.opgea.visitors.service;
 
+import com.opgea.visitors.domain.qualifier.EmployeeType;
 import com.opgea.visitors.web.dto.EmployeeDTO;
 import java.util.List;
 
@@ -17,7 +18,8 @@ public interface EmployeeService {
     public EmployeeDTO update(EmployeeDTO employeeDTO);
     public EmployeeDTO remove(Long id);
     public EmployeeDTO find(Long id);
+    public List<EmployeeDTO> searchEmployees(Long companyId, String searchKey, EmployeeType employeeType);
     public List<EmployeeDTO> findAll();
-    public List<EmployeeDTO> findAllByCompanyId(Long companyId);
+    public List<EmployeeDTO> findAllByCompanyId(Long companyId, EmployeeType employeeType);
     public List<EmployeeDTO> findAllByDepartmentId(Long departmentId);
 }

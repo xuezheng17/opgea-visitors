@@ -4,9 +4,9 @@
  */
 package com.opgea.visitors.service;
 
-import com.opgea.visitors.domain.modal.CompanyStatus;
-import com.opgea.visitors.domain.modal.EmployeeStatus;
-import com.opgea.visitors.domain.modal.VisitorStatus;
+import com.opgea.visitors.domain.model.CompanyStatus;
+import com.opgea.visitors.domain.model.EmployeeStatus;
+import com.opgea.visitors.domain.model.VisitorStatus;
 import com.opgea.visitors.domain.qualifier.OnlineQualifier;
 import com.opgea.visitors.web.dto.VisitorDTO;
 import java.util.List;

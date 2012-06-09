@@ -4,8 +4,8 @@
  */
 package com.opgea.visitors.service;
 
-import com.opgea.visitors.domain.modal.ExtJSTreeModel;
-import com.opgea.visitors.domain.modal.SimpleModel;
+import com.opgea.visitors.domain.model.ExtJSTreeModel;
+import com.opgea.visitors.domain.model.SimpleModel;
 import com.opgea.visitors.domain.qualifier.EmployeeType;
 import java.util.List;
 

@@ -6,10 +6,9 @@ package com.opgea.visitors.web.controller;
 
 import com.opgea.constraints.SessionConstraints;
 import com.opgea.util.ImageUtil;
-import com.opgea.visitors.domain.modal.JsonModelMap;
-import com.opgea.visitors.domain.modal.SessionData;
-import com.opgea.visitors.domain.modal.VisitorStatus;
-import com.opgea.visitors.domain.modal.VisitorStatus;
+import com.opgea.visitors.domain.model.JsonModelMap;
+import com.opgea.visitors.domain.model.SessionData;
+import com.opgea.visitors.domain.model.VisitorStatus;
 import com.opgea.visitors.domain.qualifier.EmployeeType;
 import com.opgea.visitors.domain.qualifier.RequestStatusQualifier;
 import com.opgea.visitors.service.ApplicationService;
@@ -24,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -64,12 +64,9 @@ public class VisitorController {
     public @ResponseBody Map<String, Object> create(VisitorDTO visitorDTO, HttpServletRequest request) throws IOException{
         HttpSession session = request.getSession();
         SessionData sessionData = (SessionData) session.getAttribute(SessionConstraints.SESSION_DATA.name());
-
-
-        
         
         BufferedImage originalImage = null;
-        if(sessionData.getEmployeeType() == EmployeeType.RECEPTION.ordinal() || sessionData.getEmployeeType() == EmployeeType.ADMIN.ordinal()) {
+        if(sessionData.getEmployeeType() == EmployeeType.RECEPTION.ordinal()) {
             visitorDTO.setCreatedBy(sessionData.getEmpId());
             originalImage = ImageIO.read(new File("c:/visitor_images/"+sessionData.getEmpId()+".jpeg"));
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -142,8 +139,13 @@ public class VisitorController {
     }
     
     @RequestMapping(method= RequestMethod.GET, value="notification")
-    public @ResponseBody Map<String, Object> getNotification(HttpServletRequest request){
-        HttpSession session = request.getSession();
+    public @ResponseBody Map<String, Object> getNotification(HttpServletRequest request,
+                                                             HttpServletResponse response) throws IOException{
+        HttpSession session = request.getSession(false);
+        if(session == null){
+            response.sendRedirect("app/login");
+        }
+        
         SessionData sessionData = (SessionData) session.getAttribute(SessionConstraints.SESSION_DATA.name());
         List<VisitorStatus> visitors = 
                 applicationService.findAllVisitorStatusByEmployeeId(sessionData.getCompanyId(), sessionData.getEmpId());
