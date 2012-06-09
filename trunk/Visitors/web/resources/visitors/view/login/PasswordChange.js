@@ -34,8 +34,7 @@ Ext.define('Visitors.view.login.PasswordChange', {
         Ext.applyIf(me, {
             items: [
                 {
-                    xtype: 'textfield',
-                    id: 'loginId',
+                    xtype: 'hidden',
                     name: 'loginId',
                     fieldLabel: 'LoginId',
                     labelAlign: 'right',
@@ -56,6 +55,7 @@ Ext.define('Visitors.view.login.PasswordChange', {
                 {
                     xtype: 'textfield',
                     inputType: 'password',
+                    id: 'newPassword',
                     name: 'newPassword',
                     fieldLabel: 'New Password',
                     labelAlign: 'right',
@@ -66,6 +66,7 @@ Ext.define('Visitors.view.login.PasswordChange', {
                 {
                     xtype: 'textfield',
                     inputType: 'password',
+                    id: 'confirmPassword',
                     name: 'confirmPassword',
                     fieldLabel: 'Confirm Password',
                     labelAlign: 'right',
@@ -85,16 +86,38 @@ Ext.define('Visitors.view.login.PasswordChange', {
                     items: [
                         {
                             xtype: 'button',
-                            text: 'Save'
-                        },
-                        {
-                            xtype: 'tbseparator'
-                        },
-                        {
-                            xtype: 'button',
                             text: 'Change',
                             handler: function(){
-                                me.getLoginInfo();
+                                var newPassword = Ext.getCmp('newPassword').getValue();
+                                var confirmPassword = Ext.getCmp('confirmPassword').getValue();
+                                
+                                if(newPassword == confirmPassword){
+                                    var form = this.up('form').getForm();
+                                    if(form.isValid()){
+                                        form.submit({
+                                           url: 'login/updatePassword',
+                                           mevthod:'POST',
+                                           waitMsg: 'Processing...',
+                                           success: function(form, action){
+                                               Ext.Msg.alert('Success',action.result.data);
+                                            },
+                                           failure: function(form, action){
+                                               if(action.failureType == Ext.form.Action.CLIENT_INVALID){
+                                                   Ext.Msg.alert("Cannot Submit", "Some fields are still invalid! ");
+                                               }
+                                               if(action.failureType == Ext.form.Action.CONNECT_FAILURE){
+                                                   Ext.Msg.alert("Failure","Server communication failure: "+
+                                                   action.response.status+' '+action.response.statusText);
+                                               }
+                                               if(action.failuretype == Ext.form.Action.SERVER_INVALID){
+                                                   Ext.Mst.alert("Warning", "action.result.errormsg");
+                                               }
+                                           }
+                                        });
+                                    }
+                                }else{
+                                    Ext.Msg.alert('Alert', 'Confirm Password does not match with New Password.');
+                                }
                             }
                         }
                     ]

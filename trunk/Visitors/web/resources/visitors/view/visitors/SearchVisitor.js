@@ -9,7 +9,7 @@ Ext.define('Visitors.view.visitors.SearchVisitor', {
     bodyPadding: '',
     title: '',
     
-     searchVisitors: function(visitingDate, searchKey){
+    searchVisitors: function(visitingDate, searchKey){
        //Ext.Msg.alert('Search Key', visitingDate+": "+searchKey);
        var visitorStore = Ext.getStore('searchVisitorStore');
         visitorStore.load({
