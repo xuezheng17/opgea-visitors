@@ -17,6 +17,7 @@ public interface EmployeeDAO {
     public Employee update(Employee employee);
     public Employee remove(Long id);
     public Employee find(Long id);
+    public List<Employee> searchEmployees(Long companyId, String searchKey) ;
     public List<Employee> findAll();
     public List<Employee> findAllByCompanyId(Long companyId);
     public List<Employee> findAllByDepartmentId(Long departmentId);
