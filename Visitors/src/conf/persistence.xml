@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+  <persistence-unit name="VisitorsPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>com.opgea.visitors.domain.entities.City</class>
+    <class>com.opgea.visitors.domain.entities.Company</class>
+    <class>com.opgea.visitors.domain.entities.Country</class>
+    <class>com.opgea.visitors.domain.entities.Designation</class>
+    <class>com.opgea.visitors.domain.entities.Employee</class>
+    <class>com.opgea.visitors.domain.entities.Login</class>
+    <class>com.opgea.visitors.domain.entities.WorkStation</class>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/visitors"/>
+      <property name="javax.persistence.jdbc.password" value="adminadmin"/>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.user" value="root"/>
+      <property name="eclipselink.ddl-generation" value="update"/>
+    </properties>
+  </persistence-unit>
+</persistence>
