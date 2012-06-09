@@ -10,8 +10,8 @@ import com.opgea.visitors.dao.LoginDAO;
 import com.opgea.visitors.domain.entities.Company;
 import com.opgea.visitors.domain.entities.Employee;
 import com.opgea.visitors.domain.entities.Login;
-import com.opgea.visitors.domain.modal.CompanyStatus;
-import com.opgea.visitors.domain.modal.MailModel;
+import com.opgea.visitors.domain.model.CompanyStatus;
+import com.opgea.visitors.domain.model.MailModel;
 import com.opgea.visitors.domain.qualifier.EmployeeType;
 import com.opgea.visitors.service.ApplicationService;
 import com.opgea.visitors.service.CompanyService;
@@ -90,7 +90,7 @@ public class CompanyServiceImpl implements CompanyService{
                              "Your Login Id has been created for <b>OPGEA Visitors</b> Application as <br>" +
                              "<b>User Id : </b>"+login.getLoginId()+"<br> " +
                              "<b>Password : </b>"+login.getPassword()+"<br> " +
-                             "Click on link to Login: <a href='http://localhost:8080/Visitors/app/login'>Login</login>" +
+                             "Click on this link to Login: <a href='http://opgea.com/Visitors/app/login'>Login</login>" +
                              "</html>");
         mailModel.setFilePath(filePath);
 

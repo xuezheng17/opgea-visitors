@@ -8,10 +8,11 @@ import com.opgea.visitors.dao.EmployeeDAO;
 import com.opgea.visitors.dao.LoginDAO;
 import com.opgea.visitors.domain.entities.Employee;
 import com.opgea.visitors.domain.entities.Login;
-import com.opgea.visitors.domain.modal.EmployeeStatus;
+import com.opgea.visitors.domain.model.EmployeeStatus;
 import com.opgea.visitors.domain.qualifier.OnlineQualifier;
 import com.opgea.visitors.service.ApplicationService;
 import com.opgea.visitors.service.LoginService;
+import com.opgea.visitors.web.dto.ChangePasswordDTO;
 import com.opgea.visitors.web.dto.LoginDTO;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,9 +47,29 @@ public class LoginServiceImpl implements LoginService{
 
     @Override
     public LoginDTO update(LoginDTO loginDTO) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Login login = loginDAO.find(loginDTO.getLoginId());
+        login.setPassword(loginDTO.getPassword());
+        loginDAO.update(login);
+        return loginDTO;
     }
 
+    @Override
+    public Boolean updatePassword(ChangePasswordDTO changePasswordDTO) {
+        Boolean status = false;
+        Login login = loginDAO.find(changePasswordDTO.getLoginId());
+        System.out.println("Login : "+login);
+        if(login != null){
+            if(login.getPassword().equals(changePasswordDTO.getCurrentPassword())){
+                login.setPassword(changePasswordDTO.getConfirmPassword());
+                loginDAO.update(login);
+                status = true;
+            }
+        }else{
+            status = false;
+        }
+        return status;
+    }
+    
     @Override
     public LoginDTO remove(String loginId) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -57,10 +78,13 @@ public class LoginServiceImpl implements LoginService{
     @Override
     public LoginDTO find(String loginId) {
         Login login = loginDAO.find(loginId);
-        LoginDTO loginDTO = new LoginDTO();
-        loginDTO.setEmployeeId(login.getEmployee().getId());
-        loginDTO.setLoginId(login.getLoginId());
-        loginDTO.setPassword(login.getPassword());
+        LoginDTO loginDTO = null;        
+        if(login != null){
+            loginDTO = new LoginDTO();
+            loginDTO.setEmployeeId(login.getEmployee().getId());
+            loginDTO.setLoginId(login.getLoginId());
+            loginDTO.setPassword(login.getPassword());
+        }
         return loginDTO;
     }
 
@@ -86,5 +110,7 @@ public class LoginServiceImpl implements LoginService{
         }
         return authentic;
     }
+
+    
     
 }

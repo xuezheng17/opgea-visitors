@@ -6,11 +6,14 @@ package com.opgea.visitors.web.controller;
 
 import com.opgea.constraints.ActionConstraints;
 import com.opgea.constraints.SessionConstraints;
-import com.opgea.visitors.domain.modal.JsonModelMap;
-import com.opgea.visitors.domain.modal.SessionData;
+import com.opgea.visitors.domain.model.EmployeeStatus;
+import com.opgea.visitors.domain.model.JsonModelMap;
+import com.opgea.visitors.domain.model.SessionData;
+import com.opgea.visitors.domain.qualifier.OnlineQualifier;
 import com.opgea.visitors.service.ApplicationService;
 import com.opgea.visitors.service.EmployeeService;
 import com.opgea.visitors.service.LoginService;
+import com.opgea.visitors.web.dto.ChangePasswordDTO;
 import com.opgea.visitors.web.dto.EmployeeDTO;
 import com.opgea.visitors.web.dto.LoginDTO;
 import java.util.Map;
@@ -20,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -70,10 +74,7 @@ public class LoginController {
             sessionData.setDepartmentId(employeeDTO.getDepartmentId());
             
             session.setAttribute(SessionConstraints.SESSION_DATA.toString(), sessionData);
-            
-            
         }
-        
         return JsonModelMap.success().data(success);
     }
     
@@ -86,12 +87,39 @@ public class LoginController {
         return JsonModelMap.success().data(sessionData);
     }
     
+    @RequestMapping(value="updatePassword", method= RequestMethod.POST)
+    public @ResponseBody Map<String, Object> updatePassword(ChangePasswordDTO passwordDTO){
+        System.out.println("ChangePasswordDTO: "+passwordDTO);
+        Boolean status = loginService.updatePassword(passwordDTO);
+        if(status == false){
+            return JsonModelMap.success().data("Password could not updated.");
+        }else{
+            return JsonModelMap.success().data("Password changed.");
+        }
+    }
+    
     @RequestMapping(value="logout", method= RequestMethod.GET)
     public @ResponseBody 
     Map<String, Object> logout(HttpServletRequest request){
         HttpSession session = request.getSession();
-        //SessionData sessionData = (SessionData) session.getAttribute(SessionConstraints.SESSION_DATA.name());
+        SessionData sessionData = (SessionData) session.getAttribute(SessionConstraints.SESSION_DATA.name());
+        EmployeeStatus employeeStatus = new EmployeeStatus();
+        employeeStatus.setCompanyId(sessionData.getCompanyId());
+        employeeStatus.setEmployeeId(sessionData.getEmpId());
+        employeeStatus.setOnlineStatus(OnlineQualifier.OFFLINE);
+        applicationService.removeEmployeeStatus(employeeStatus);
         session.invalidate();
         return JsonModelMap.success().data("login");
+    }
+    
+    @RequestMapping(value="isExistingUser", method= RequestMethod.GET)
+    public @ResponseBody 
+    Map<String, Object> isExistingUser(@RequestParam(value="emailId", required=false)String emailId, HttpServletRequest request){
+        
+        if(loginService.find(emailId) != null){
+            return JsonModelMap.success().data("YES");
+        }else{
+            return JsonModelMap.success().data("NO");
+        }
     }
 }

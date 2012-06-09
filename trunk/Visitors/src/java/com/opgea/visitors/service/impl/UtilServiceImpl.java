@@ -8,8 +8,8 @@ import com.opgea.visitors.dao.CityDAO;
 import com.opgea.visitors.dao.CountryDAO;
 import com.opgea.visitors.domain.entities.City;
 import com.opgea.visitors.domain.entities.Country;
-import com.opgea.visitors.domain.modal.ExtJSTreeModel;
-import com.opgea.visitors.domain.modal.SimpleModel;
+import com.opgea.visitors.domain.model.ExtJSTreeModel;
+import com.opgea.visitors.domain.model.SimpleModel;
 import com.opgea.visitors.domain.qualifier.EmployeeType;
 import com.opgea.visitors.service.UtilService;
 import java.util.ArrayList;
@@ -125,6 +125,7 @@ public class UtilServiceImpl implements UtilService{
             menuList.add(department);
             menuList.add(designation);
             menuList.add(employee);
+            menuList.add(requestList);
         }
         if(employeeType == EmployeeType.RECEPTION){
             menuList.add(entry);

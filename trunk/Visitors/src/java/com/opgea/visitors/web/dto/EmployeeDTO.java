@@ -34,12 +34,14 @@ public class EmployeeDTO {
     private Long departmentId;
     private String departmentName;
     private Integer onlineStatusId = 0;
+    private String password = "";
+    private String metaData;
     
 
     public EmployeeDTO() {
     }
 
-    public EmployeeDTO(Long id, Long companyId, Integer employeeType, String firstName, String middleInitial, String lastName, Date dateOfBirth, Long branchId, String email, String phone1, String phone2, byte[] picture, String empCode, Long designationId, String designationName, Long departmentId, String departmentName, Integer onlineStatusId) {
+    public EmployeeDTO(Long id, Long companyId, Integer employeeType, String firstName, String middleInitial, String lastName, Date dateOfBirth, Long branchId, String email, String phone1, String phone2, byte[] picture, String empCode, Long designationId, String designationName, Long departmentId, String departmentName, Integer onlineStatusId, String password) {
         this.id = id;
         this.companyId = companyId;
         this.employeeType = employeeType;
@@ -58,6 +60,7 @@ public class EmployeeDTO {
         this.departmentId = departmentId;
         this.departmentName = departmentName;
         this.onlineStatusId = onlineStatusId;
+        this.password = password;
     }
 
     
@@ -216,6 +219,40 @@ public class EmployeeDTO {
         this.onlineStatusId = onlineStatusId;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getMetaData() {
+        StringBuilder metaBuilder = new StringBuilder();
+        metaBuilder.append(this.firstName);
+        metaBuilder.append(" ");
+        metaBuilder.append(this.middleInitial);
+        metaBuilder.append(" ");
+        metaBuilder.append(this.lastName);
+        metaBuilder.append(" ");
+        metaBuilder.append(this.designationName);
+        metaBuilder.append(" ");
+        metaBuilder.append(this.departmentName);
+        metaBuilder.append(" ");
+        metaBuilder.append(this.phone1);
+        metaBuilder.append(" ");
+        metaBuilder.append(this.phone2);
+        metaBuilder.append(" ");
+        metaBuilder.append(this.email);
+        this.metaData = metaBuilder.toString();
+        return metaData;
+    }
+
+    public void setMetaData(String metaData) {
+        this.metaData = metaData;
+    }
+
+    
     @Override
     public String toString() {
         return "EmployeeDTO{" + "id=" + id + ", companyId=" + companyId + ", employeeType=" + employeeType + ", employeeTypeName=" + employeeTypeName + ", firstName=" + firstName + ", middleInitial=" + middleInitial + ", lastName=" + lastName + ", dateOfBirth=" + dateOfBirth + ", branchId=" + branchId + ", email=" + email + ", phone1=" + phone1 + ", phone2=" + phone2 + ", picture=" + picture + ", empCode=" + empCode + ", designationId=" + designationId + ", designationName=" + designationName + ", departmentId=" + departmentId + ", departmentName=" + departmentName + ", onlineStatusId=" + onlineStatusId + '}';

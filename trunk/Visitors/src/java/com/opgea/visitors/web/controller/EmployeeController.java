@@ -5,10 +5,11 @@
 package com.opgea.visitors.web.controller;
 
 import com.opgea.constraints.SessionConstraints;
-import com.opgea.visitors.domain.modal.ExtJSFormResult;
-import com.opgea.visitors.domain.modal.FileUploadBean;
-import com.opgea.visitors.domain.modal.JsonModelMap;
-import com.opgea.visitors.domain.modal.SessionData;
+import com.opgea.visitors.domain.model.ExtJSFormResult;
+import com.opgea.visitors.domain.model.FileUploadBean;
+import com.opgea.visitors.domain.model.JsonModelMap;
+import com.opgea.visitors.domain.model.SessionData;
+import com.opgea.visitors.domain.qualifier.EmployeeType;
 import com.opgea.visitors.service.EmployeeService;
 import com.opgea.visitors.web.dto.EmployeeDTO;
 import java.io.IOException;
@@ -50,11 +51,13 @@ public class EmployeeController {
 
     
     @RequestMapping(value="create", method=RequestMethod.POST)
-    public @ResponseBody
-            Map<String, Object> create(EmployeeDTO employeeDTO, HttpServletRequest request,
+    public @ResponseBody Map<String, Object> create(EmployeeDTO employeeDTO, 
+                                HttpServletRequest request,
                                 HttpServletResponse response) throws IOException{
+        
         HttpSession session = request.getSession();
         SessionData sessionData = (SessionData) session.getAttribute(SessionConstraints.SESSION_DATA.name());
+        
         employeeDTO.setCompanyId(sessionData.getCompanyId());
         employeeDTO = employeeService.create(employeeDTO);
         
@@ -66,7 +69,8 @@ public class EmployeeController {
             Map<String, Object> getEmployeeList(HttpServletRequest request){
         HttpSession session = request.getSession();
         SessionData sessionData = (SessionData) session.getAttribute(SessionConstraints.SESSION_DATA.name());
-        List<EmployeeDTO> empDTOList = employeeService.findAllByCompanyId(sessionData.getCompanyId());
+        List<EmployeeDTO> empDTOList = employeeService.findAllByCompanyId(sessionData.getCompanyId(), 
+                                                                            EmployeeType.values()[sessionData.getEmployeeType()]);
 
         return JsonModelMap.success().data(empDTOList);
     }
@@ -113,5 +117,20 @@ public class EmployeeController {
         return JsonModelMap.success().data(status);
     }
     
+    
+    @RequestMapping(method=RequestMethod.GET, value="searchEmployees", params={}  )
+    public @ResponseBody Map<String, Object> searchVisitors(@RequestParam(value="searchKey", required=false)
+                                String searchKey, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        SessionData sessionData = (SessionData) session.getAttribute(SessionConstraints.SESSION_DATA.name());
+        //Long employeeId = Long.parseLong(request.getParameter("employeeId").toString());
+        System.out.println("Search Employees Controller: "+searchKey);
+        List<EmployeeDTO> employees = employeeService.searchEmployees(
+                sessionData.getCompanyId(), 
+                searchKey, 
+                EmployeeType.values()[sessionData.getEmployeeType()]);
+        
+        return JsonModelMap.success().data(employees);
+    }
    
 }

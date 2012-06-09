@@ -11,7 +11,7 @@ import com.opgea.visitors.dao.VisitorDAO;
 import com.opgea.visitors.domain.entities.Company;
 import com.opgea.visitors.domain.entities.Employee;
 import com.opgea.visitors.domain.entities.Visitor;
-import com.opgea.visitors.domain.modal.VisitorStatus;
+import com.opgea.visitors.domain.model.VisitorStatus;
 import com.opgea.visitors.domain.qualifier.ReplyQualifier;
 import com.opgea.visitors.domain.qualifier.RequestStatusQualifier;
 import com.opgea.visitors.service.ApplicationService;
