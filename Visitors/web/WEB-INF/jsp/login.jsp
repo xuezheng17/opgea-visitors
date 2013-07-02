@@ -84,7 +84,7 @@
         <table width="100%">
             <tr>
                 <td align="center">
-                    <a href="/Visitors/index.jsp">
+                    <a href="http://www.opgea.com">
                         <img src="<spring:url value="/images/opgea_logo.jpg"/>" height="150" width="250" alt="opgea"/>
                     </a>
                 </td>
