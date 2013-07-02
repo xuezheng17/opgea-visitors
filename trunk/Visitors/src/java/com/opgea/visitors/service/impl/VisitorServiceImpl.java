@@ -43,6 +43,7 @@ public class VisitorServiceImpl implements VisitorService{
     public VisitorDTO create(VisitorDTO visitorDTO) {
         Company company = companyDAO.find(visitorDTO.getCompanyId());
         Employee employee = employeeDAO.find(visitorDTO.getEmployeeId());
+        Employee createdBy = employeeDAO.find(visitorDTO.getCreatedBy());
         Visitor visitor = null;
         if(visitorDTO.getId() == 0){
             visitor = new Visitor();
@@ -70,6 +71,7 @@ public class VisitorServiceImpl implements VisitorService{
              * during the RECEPTION and EMPLOYEE communication.
              */
             visitor.setPicture(visitorDTO.getPicture());
+            visitor.setForwardedTo(employee);
             visitorDAO.create(visitor);
             
             visitorDTO.setId(visitor.getId());
@@ -81,6 +83,7 @@ public class VisitorServiceImpl implements VisitorService{
             if(visitorDTO.getStatusString().equalsIgnoreCase(RequestStatusQualifier.CHECK_IN.toString())){
                 visitor.setInTime(System.currentTimeMillis());
                 visitor.setStatus(RequestStatusQualifier.CHECK_IN);
+                visitor.setForwardedTo(employee);
                 visitorDAO.update(visitor);
                 
                 visitorDTO.setInTime(String.valueOf(System.currentTimeMillis()));
@@ -91,6 +94,7 @@ public class VisitorServiceImpl implements VisitorService{
             if(visitorDTO.getStatusString().equalsIgnoreCase(RequestStatusQualifier.CHECK_OUT.toString())){
                 visitor.setOutTime(System.currentTimeMillis());
                 visitor.setStatus(RequestStatusQualifier.CHECK_OUT);
+                visitor.setForwardedTo(createdBy);
                 visitorDAO.update(visitor);
                 
                 visitorDTO.setOutTime(String.valueOf(System.currentTimeMillis()));
@@ -102,6 +106,7 @@ public class VisitorServiceImpl implements VisitorService{
                 visitor.setInTime(System.currentTimeMillis());
                 visitor.setOutTime(System.currentTimeMillis());
                 visitor.setStatus(RequestStatusQualifier.CAN_NOT_MEET);
+                visitor.setForwardedTo(createdBy);
                 visitorDAO.update(visitor);
                 
                 visitorDTO.setInTime(String.valueOf(System.currentTimeMillis()));

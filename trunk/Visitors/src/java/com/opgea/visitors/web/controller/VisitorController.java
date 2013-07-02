@@ -153,13 +153,6 @@ public class VisitorController {
         VisitorStatus visitorStatus = 
                 applicationService.findRespondedVisitorStatusByEmployeeId(sessionData.getCompanyId(), sessionData.getEmpId());
         
-        /*
-        for(VisitorStatus visitorState : visitors){
-            if(visitorState.getForwardedTo().equals(sessionData.getEmpId())){
-                visitorStatus = visitorState;
-            }
-        }*/
-        
         int count = 0;
         if(visitors != null){
             count = visitors.size();

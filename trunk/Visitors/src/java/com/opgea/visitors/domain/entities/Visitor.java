@@ -59,6 +59,8 @@ public class Visitor implements Serializable{
     @ManyToOne
     private Employee employee;
     @ManyToOne
+    private Employee forwardedTo;
+    @ManyToOne
     private Company company;
     
     private Long createdBy;
@@ -200,6 +202,14 @@ public class Visitor implements Serializable{
             return false;
         }
         return true;
+    }
+
+    public Employee getForwardedTo() {
+        return forwardedTo;
+    }
+
+    public void setForwardedTo(Employee forwardedTo) {
+        this.forwardedTo = forwardedTo;
     }
 
     @Override
