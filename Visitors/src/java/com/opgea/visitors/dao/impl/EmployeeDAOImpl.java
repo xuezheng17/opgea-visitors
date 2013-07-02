@@ -76,7 +76,6 @@ public class EmployeeDAOImpl implements EmployeeDAO{
         Session session = sessionFactory.openSession();
         Query query = session.createQuery("from Employee e WHERE e.company.id="+companyId);
         List<Employee> employees = query.list();
-        System.out.println("Employee List size: "+employees.size());
         session.close();
         return employees;
     }

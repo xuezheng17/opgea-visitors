@@ -52,7 +52,9 @@ public class ApplicationServiceImpl implements ApplicationService{
             visitorStatus.setContactNo(visitor.getContactNo());
             visitorStatus.setPurpose(visitor.getPurpose());
             visitorStatus.setRequestStatus(visitor.getStatus());
-            visitorStatus.setForwardedTo(visitor.getCreatedBy());
+            if(visitor.getForwardedTo() != null){
+                visitorStatus.setForwardedTo(visitor.getForwardedTo().getId());
+            }
             visitorStatus.setStatusRead(Boolean.TRUE);
             
             if(companies.containsKey(visitorStatus.getCompanyId())){
@@ -250,6 +252,7 @@ public class ApplicationServiceImpl implements ApplicationService{
            List<VisitorStatus> allVisitors = null; //All visitors of a particular company
            CompanyStatus companyStatus = companies.get(companyId);
            allVisitors = new ArrayList<VisitorStatus>(companyStatus.getVisitors().values());
+           System.out.println("All visitorSize: "+allVisitors.size());
            for(VisitorStatus  visitorStatus : allVisitors){
                if(visitorStatus.getForwardedTo().equals(employeeId)){
                    visitors.add(visitorStatus);
