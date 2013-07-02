@@ -74,6 +74,7 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
             if(employeeType == 'EMPLOYEE'){
                 Ext.getCmp('receptionActionButtonGroup').setDisabled(true);
                 Ext.getCmp('receptionActionToolBar').setDisabled(true);
+                Ext.getCmp('allRequestButton').setDisabled(true);
                 if(document.getElementById('camera') != null){
                     document.getElementById('camera').hidden = true;
                 }
@@ -240,7 +241,47 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                                             disabled: true,
                                             handler: function(){
                                                     var form = this.up('form').getForm();
-                                                    submitVisitorForm(form, 'visitors/create', false, me);
+                                                    
+                                                    if(form.isValid()){
+                                                        form.submit({
+                                                           //enctype: 'multipart/form-data',
+                                                           url: 'visitors/create',
+                                                           method:'POST',
+                                                           //waitMsg: 'Processing...',
+                                                           success: function(form, action){
+
+                                                                var employeeId = Ext.getCmp('employeeId').getValue();
+                                                                me.showVisitorList(employeeId);
+                                                                
+                                                                var visitorId = action.result.data.visitorId;
+                                                                var toPhoneNo = action.result.data.toPhoneNo;
+                                                                var from = action.result.data.from;
+                                                                var message = action.result.data.message;
+                                                                //Ext.Msg.alert('Success',visitorId);
+
+                                                                sendNotificationSms(visitorId, toPhoneNo, from, message);
+                                                                var sendMsg = '<b><font color="red" size="4">'+
+                                                                              'Notification has been sent to'+
+                                                                              ': '+toPhoneNo+
+                                                                              '</font></b>'
+
+                                                                //Ext.Msg.alert('Message',sendMsg);
+                                                            },
+                                                           failure: function(form, action){
+                                                               if(action.failureType == Ext.form.Action.CLIENT_INVALID){
+                                                                   Ext.Msg.alert("Cannot Submit", "Some fields are still invalid! ");
+                                                               }
+                                                               if(action.failureType == Ext.form.Action.CONNECT_FAILURE){
+                                                                   Ext.Msg.alert("Failure","Server communication failure: "+
+                                                                   action.response.status+' '+action.response.statusText);
+                                                               }
+                                                               if(action.failuretype == Ext.form.Action.SERVER_INVALID){
+                                                                   Ext.Mst.alert("Warning", "action.result.errormsg");
+                                                               }
+                                                           }
+                                                        });
+                                                        
+                                                    }
                                                     Ext.getCmp('requestButton').setDisabled(true);
                                                     
                                             }
@@ -466,6 +507,7 @@ Ext.define('Visitors.view.visitors.VisitorsEntry', {
                                                },
                                                {
                                                 xtype: 'button',
+                                                id: 'allRequestButton',
                                                 text: 'All Request',
                                                 iconCls: 'tableRefreshIcon',
                                                 iconAlign: 'top',

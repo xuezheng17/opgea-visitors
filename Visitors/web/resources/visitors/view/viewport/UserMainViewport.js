@@ -98,7 +98,7 @@ Ext.define('Visitors.view.viewport.UserMainViewport', {
                                         '</td>',
                                         '<td>&nbsp</td>',
                                         '<td valign="top">',
-                                        '<b>{visitorName}</b><br>',
+                                        '{visitorName}&nbsp<b>({requestStatus})</b><br>',
                                         '{contactNo}<br>',
                                         '{purpose}<br>',
                                         '</td>',
@@ -147,7 +147,7 @@ Ext.define('Visitors.view.viewport.UserMainViewport', {
                      }
                   });
             },
-            interval: 2000 // 2 Second
+            interval: 10000 // 2 Second
         }
         Ext.TaskManager.start(taks);
     },

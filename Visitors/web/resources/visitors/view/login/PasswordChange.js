@@ -3,6 +3,7 @@ Ext.define('Visitors.view.login.PasswordChange', {
 
     bodyPadding: 10,
     //title: 'Login Information',
+    height: 180,
     
     getLoginInfo: function(){
       var form = this.getForm();
@@ -40,7 +41,8 @@ Ext.define('Visitors.view.login.PasswordChange', {
                     labelAlign: 'right',
                     msgTarget: 'side',
                     allowBlank: false,
-                    anchor: '100%'
+                    anchor: '100%',
+                    editable: false
                 },
                 {
                     xtype: 'textfield',
@@ -49,7 +51,6 @@ Ext.define('Visitors.view.login.PasswordChange', {
                     fieldLabel: 'Current Password',
                     labelAlign: 'right',
                     msgTarget: 'side',
-                    allowBlank: false,
                     anchor: '100%'
                 },
                 {
