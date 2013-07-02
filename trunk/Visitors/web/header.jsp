@@ -19,7 +19,7 @@
                 font-family: 'verdana';
                 font-size: 12px;
                 font-weight: bolder;
-                text-align: right;
+                text-align: left;
                 padding-top: 4px;
                 padding-left: 10px;
                 padding-right: 10px;
@@ -28,11 +28,16 @@
     </head>
     <body style="margin-left: 0px; margin-top: 0px;">
         <div id="topDiv" class="topDiv">
-            <!--
-            <a href="/Visitors/app/company" style="color: white;">Visitors</a>
-            -->
-            <a href="<spring:url value="/images/Guideline.pdf"/>" style="color: white;">
-                 Guideline
+            <a href="/Visitors/app/login" style="color: white;">
+                 Company Visitors
+            </a>
+            &nbsp|&nbsp
+            <a href="/ApptVisitors/app/login" style="color: white;">
+                 Apartment Visitors
+            </a>
+            &nbsp|&nbsp
+            <a href="/oqms/app/login" style="color: white;">
+                 Queue Management
             </a>
         </div>
     </body>

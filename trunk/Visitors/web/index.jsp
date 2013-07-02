@@ -9,36 +9,57 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" type="text/css" href="resources/ext-4.0/resources/css/ext-all-access.css" type="text/css" media="all"/>
+        <script type="text/javascript" src="resources/ext-4.0/ext-all-debug.js" ></script>
+        <style>
+            .video{
+                width: 680px;
+                height: 400px;
+                background-color: white;
+            }
+        </style>
+        <script>
+            Ext.onReady(function(){
+                Ext.create('Ext.panel.Panel', {
+                        //title: 'Accordion Layout',
+                        width: 720,
+                        height: 500,
+                        layout:'accordion',
+                        defaults: {
+                            bodyStyle: 'padding:15px'
+                        },
+                        layoutConfig: {
+                            titleCollapse: false,
+                            animate: true,
+                            activeOnTop: true
+                        },
+                        items: [{
+                            title: 'Queue Management System',
+                            html: '<video class="video" controls="controls" title="OPGEA | Queue Management System">'+
+                                        '<source src="images/qms_ppt.mp4" type="video/mp4" />'+
+                                   '</video>'
+                        },{
+                            title: 'Appartment Visitors',
+                            html: 'Video will be uploaded soon.'
+                        },{
+                            title: 'Company Visitors',
+                            html: 'Video will be uploaded'
+                        }],
+                        renderTo: 'videos'
+                    });
+            });
+        </script>
         <title>OPGEA</title>
     </head>
-    <body style="margin-left: 0px; margin-top: 0px; margin-right: 0px;">
+    <body style="margin-left: 0px; margin-top: 0px; margin-right: 0px; background-color: white;">
         <%@include file="header.jsp" %>
         <br/>
         <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <table width="100%">
-            <tr>
-                <td align="center">
-                    <a href="/Visitors/app/login">
-                        <img src="images/opgea_logo.jpg" height="150" width="250" alt="opgea"/>
-                    </a>
-                </td>
-            </tr>
-        </table>
-        <br/>       
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
+        <center>
+            <div id="videos">
+            </div>
+        </center>
+    
         <br/>
         <%@include file="footer.jsp" %>
     </body>
